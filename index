@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklists</title>
+<style>
+  :root {
+    --green-light: #BAC095;
+    --green-dark:  #3D4127;
+    --black:       #000000;
+    --white:       #FFFFFF;
+    --bg:          #F5F6F0;
+    --border:      #d0d4bb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: var(--green-dark); color: var(--white); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  header h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  header span { font-size: 0.72rem; opacity: 0.55; letter-spacing: 0.06em; }
+
+  /* LAYOUT */
+  .app { display: grid; grid-template-columns: 270px 1fr; min-height: calc(100vh - 56px); }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--white); border-right: 2px solid var(--green-dark); display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-tabs { display: flex; border-bottom: 2px solid var(--green-dark); }
+  .tab-btn { flex: 1; padding: 11px 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: none; border: none; cursor: pointer; color: #999; transition: background 0.12s, color 0.12s; }
+  .tab-btn.active { background: var(--green-dark); color: var(--white); }
+  .tab-btn:not(.active):hover { background: var(--bg); color: var(--green-dark); }
+
+  .sidebar-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-section.hidden { display: none; }
+  .list-scroll { flex: 1; overflow-y: auto; padding: 6px 0; }
+
+  .checklist-item { display: flex; align-items: center; padding: 9px 16px; cursor: pointer; border-left: 3px solid transparent; transition: background 0.12s; gap: 7px; }
+  .checklist-item:hover { background: var(--bg); }
+  .checklist-item.active { border-left-color: var(--green-dark); background: #eef0e6; }
+  .checklist-item .ci-icon { font-size: 0.85rem; flex-shrink: 0; opacity: 0.6; }
+  .checklist-item .ci-name { font-size: 0.88rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .checklist-item .ci-prog { font-size: 0.68rem; color: #888; white-space: nowrap; }
+  .ci-del { background: none; border: none; cursor: pointer; color: #bbb; font-size: 1rem; padding: 0 1px; flex-shrink: 0; }
+  .ci-del:hover { color: #c00; }
+  .sidebar-empty { padding: 16px 20px; font-size: 0.78rem; color: #bbb; }
+
+  .new-list-form { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; gap: 7px; }
+  .new-list-form input { flex: 1; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 4px; font-size: 0.83rem; outline: none; }
+  .new-list-form input:focus { border-color: var(--green-dark); }
+  .btn-add-list { background: var(--green-dark); color: var(--white); border: none; border-radius: 4px; padding: 7px 12px; cursor: pointer; font-size: 1rem; font-weight: 700; }
+  .btn-add-list:hover { background: #4f5535; }
+
+  /* TEMPLATE items in sidebar */
+  .tpl-item { display: flex; align-items: center; padding: 9px 16px; cursor: pointer; border-left: 3px solid transparent; gap: 7px; transition: background 0.12s; }
+  .tpl-item:hover { background: var(--bg); }
+  .tpl-item.active { border-left-color: var(--green-light); background: #eef0e6; }
+  .tpl-item .ci-name { font-size: 0.88rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tpl-item .ci-count { font-size: 0.68rem; color: #888; }
+
+  /* MAIN */
+  .main { padding: 26px 34px; display: flex; flex-direction: column; gap: 18px; }
+  .empty-state { display: flex; align-items: center; justify-content: center; height: 100%; color: #bbb; font-size: 0.95rem; text-align: center; padding: 60px; line-height: 1.7; }
+
+  /* CHECKLIST HEADER */
+  .checklist-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .checklist-name-edit { font-size: 1.45rem; font-weight: 700; color: var(--green-dark); border: none; background: transparent; outline: none; width: 360px; max-width: 100%; }
+  .checklist-name-edit:focus { border-bottom: 2px solid var(--green-light); }
+  .checklist-meta { font-size: 0.73rem; color: #999; margin-top: 3px; }
+  .progress-bar-wrap { background: var(--border); border-radius: 6px; height: 6px; overflow: hidden; width: 130px; }
+  .progress-bar-fill { height: 100%; background: var(--green-dark); transition: width 0.3s; border-radius: 6px; }
+
+  /* ITEMS — drag & drop */
+  .items-list { display: flex; flex-direction: column; gap: 5px; }
+  .item-row { display: flex; align-items: center; gap: 9px; background: var(--white); border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px; transition: border-color 0.12s, opacity 0.12s; user-select: none; }
+  .item-row:hover { border-color: var(--green-light); }
+  .item-row.done { background: #f0f2e9; }
+  .item-row.dragging { opacity: 0.35; border-style: dashed; }
+  .item-row.drag-over { border-color: var(--green-dark); border-style: solid; background: #eef0e6; }
+
+  .drag-handle { cursor: grab; color: #ccc; font-size: 1rem; flex-shrink: 0; padding: 0 2px; touch-action: none; }
+  .drag-handle:hover { color: var(--green-dark); }
+  .drag-handle:active { cursor: grabbing; }
+
+  .item-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--green-dark); cursor: pointer; flex-shrink: 0; }
+  .item-text { flex: 1; font-size: 0.93rem; border: none; background: transparent; outline: none; color: var(--black); min-width: 60px; }
+  .item-row.done .item-text { text-decoration: line-through; color: #aaa; }
+  .item-note { font-size: 0.78rem; color: #999; border: none; background: transparent; outline: none; width: 150px; min-width: 60px; }
+  .btn-del-item { background: none; border: none; cursor: pointer; color: #ccc; font-size: 1rem; padding: 0 1px; flex-shrink: 0; }
+  .btn-del-item:hover { color: #c00; }
+
+  /* ADD ITEM */
+  .add-item-form { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+  .add-item-form input[type="text"] { flex: 1; min-width: 120px; padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.88rem; outline: none; }
+  .add-item-form input:focus { border-color: var(--green-dark); }
+  .btn-add-item { background: var(--green-light); color: var(--green-dark); border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 0.88rem; font-weight: 700; white-space: nowrap; }
+  .btn-add-item:hover { background: #a8b082; }
+
+  /* ACTIONS */
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-action { display: flex; align-items: center; gap: 5px; padding: 7px 15px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1.5px solid var(--green-dark); background: transparent; color: var(--green-dark); transition: background 0.12s; white-space: nowrap; }
+  .btn-action:hover { background: #eef0e6; }
+  .btn-action.primary { background: var(--green-dark); color: var(--white); }
+  .btn-action.primary:hover { background: #4f5535; }
+  .btn-action.accent { background: var(--green-light); color: var(--green-dark); border-color: var(--green-light); }
+  .btn-action.accent:hover { background: #a8b082; border-color: #a8b082; }
+  .btn-action.danger { border-color: #c00; color: #c00; }
+  .btn-action.danger:hover { background: #fff0f0; }
+
+  /* TEMPLATE EDITOR */
+  .tpl-badge { display: inline-block; background: var(--green-light); color: var(--green-dark); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; margin-left: 8px; vertical-align: middle; }
+  .tpl-meta { font-size: 0.73rem; color: #999; margin-top: 3px; }
+  .tpl-item-row { display: flex; align-items: center; gap: 9px; background: var(--white); border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px; }
+  .tpl-item-row .drag-handle { cursor: grab; color: #ccc; }
+  .tpl-item-row .drag-handle:hover { color: var(--green-dark); }
+  .tpl-item-text { flex: 1; font-size: 0.93rem; border: none; background: transparent; outline: none; }
+  .tpl-item-note { font-size: 0.78rem; color: #999; border: none; background: transparent; outline: none; width: 150px; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--white); border-radius: 10px; padding: 28px 32px; min-width: 320px; max-width: 420px; width: 90%; box-shadow: 0 8px 40px rgba(0,0,0,0.18); }
+  .modal h2 { font-size: 1.1rem; color: var(--green-dark); margin-bottom: 16px; }
+  .modal p { font-size: 0.88rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+  .modal-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.9rem; outline: none; margin-bottom: 18px; }
+  .modal-input:focus { border-color: var(--green-dark); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-tpl-list { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+  .modal-tpl-opt { padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.88rem; transition: border-color 0.12s, background 0.12s; }
+  .modal-tpl-opt:hover { border-color: var(--green-dark); background: var(--bg); }
+  .modal-tpl-opt.selected { border-color: var(--green-dark); background: #eef0e6; font-weight: 600; }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    header { display: block; padding: 8px 0; border-bottom: 2px solid #000; margin-bottom: 14px; }
+    header span { display: block; font-size: 0.75rem; color: #555; }
+    .sidebar, .new-list-form, .add-item-form, .actions, .btn-del-item,
+    .ci-del, .sidebar-tabs, .drag-handle, .modal-overlay { display: none !important; }
+    .app { grid-template-columns: 1fr; }
+    .main { padding: 0; }
+    .checklist-name-edit { font-size: 1.3rem; pointer-events: none; }
+    .item-row { border: 1px solid #ccc; page-break-inside: avoid; }
+    .item-text, .item-note { pointer-events: none; }
+    .print-timestamp { display: block !important; font-size: 0.78rem; color: #666; margin-bottom: 14px; }
+    .no-print { display: none !important; }
+    .tpl-badge { background: #eee; color: #333; }
+  }
+  .print-timestamp { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Checklists</h1>
+  <span id="headerDate"></span>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="tab-btn active" id="tabLists" onclick="switchTab('lists')">Lists</button>
+      <button class="tab-btn" id="tabTemplates" onclick="switchTab('templates')">Templates</button>
+    </div>
+
+    <!-- LISTS TAB -->
+    <div class="sidebar-section" id="sectionLists">
+      <div class="list-scroll" id="checklistList"></div>
+      <div class="new-list-form">
+        <input type="text" id="newListName" placeholder="New checklist…" maxlength="60">
+        <button class="btn-add-list" onclick="addChecklist()" title="Add">+</button>
+      </div>
+    </div>
+
+    <!-- TEMPLATES TAB -->
+    <div class="sidebar-section hidden" id="sectionTemplates">
+      <div class="list-scroll" id="templateList"></div>
+      <div class="new-list-form">
+        <input type="text" id="newTplName" placeholder="New template…" maxlength="60">
+        <button class="btn-add-list" onclick="addTemplate()" title="Add">+</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="empty-state" id="emptyState">
+      Select a checklist or template from the sidebar,<br>or create a new one.
+    </div>
+
+    <!-- CHECKLIST EDITOR -->
+    <div id="checklistEditor" style="display:none; flex-direction:column; gap:16px;">
+      <div class="print-timestamp" id="printTimestamp"></div>
+      <div class="checklist-header">
+        <div>
+          <input class="checklist-name-edit" type="text" id="editName"
+                 placeholder="Checklist name…" oninput="renameActive(this.value)">
+          <div class="checklist-meta" id="checklistMeta"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+          <span style="font-size:0.8rem;color:#888;" id="progressLabel">0 / 0</span>
+        </div>
+      </div>
+      <div class="items-list" id="itemsList"></div>
+      <div class="add-item-form no-print">
+        <input type="text" id="newItemText" placeholder="Add an item…" maxlength="200" onkeydown="if(event.key==='Enter') addItem()">
+        <input type="text" id="newItemNote" placeholder="Note (optional)" maxlength="100"
+               style="width:170px;padding:8px 11px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;outline:none;"
+               onkeydown="if(event.key==='Enter') addItem()">
+        <button class="btn-add-item" onclick="addItem()">Add item</button>
+      </div>
+      <div class="actions no-print">
+        <button class="btn-action" onclick="uncheckAll()">Uncheck all</button>
+        <button class="btn-action" onclick="checkAll()">Check all</button>
+        <button class="btn-action accent" onclick="openSaveAsTemplate()">Save as template</button>
+        <button class="btn-action primary" onclick="printChecklist()">Print with timestamp</button>
+        <button class="btn-action danger" onclick="deleteActive()">Delete</button>
+      </div>
+    </div>
+
+    <!-- TEMPLATE EDITOR -->
+    <div id="templateEditor" style="display:none; flex-direction:column; gap:16px;">
+      <div class="checklist-header">
+        <div>
+          <span>
+            <input class="checklist-name-edit" type="text" id="tplEditName"
+                   placeholder="Template name…" oninput="renameTpl(this.value)">
+            <span class="tpl-badge">Template</span>
+          </span>
+          <div class="tpl-meta" id="tplMeta"></div>
+        </div>
+      </div>
+      <div class="items-list" id="tplItemsList"></div>
+      <div class="add-item-form no-print">
+        <input type="text" id="newTplItemText" placeholder="Add an item…" maxlength="200" onkeydown="if(event.key==='Enter') addTplItem()">
+        <input type="text" id="newTplItemNote" placeholder="Note (optional)" maxlength="100"
+               style="width:170px;padding:8px 11px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;outline:none;"
+               onkeydown="if(event.key==='Enter') addTplItem()">
+        <button class="btn-add-item" onclick="addTplItem()">Add item</button>
+      </div>
+      <div class="actions no-print">
+        <button class="btn-action accent" onclick="openCreateFromTpl()">Create checklist from this template</button>
+        <button class="btn-action danger" onclick="deleteTpl()">Delete template</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: Save as Template -->
+<div class="modal-overlay hidden" id="modalSaveAsTpl">
+  <div class="modal">
+    <h2>Save as template</h2>
+    <p>Give this template a name. All items (unchecked) will be saved. You can reuse it to create new checklists.</p>
+    <input class="modal-input" type="text" id="tplNameInput" placeholder="Template name…" maxlength="60">
+    <div class="modal-actions">
+      <button class="btn-action" onclick="closeModal('modalSaveAsTpl')">Cancel</button>
+      <button class="btn-action primary" onclick="saveAsTemplate()">Save template</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Create from Template -->
+<div class="modal-overlay hidden" id="modalCreateFromTpl">
+  <div class="modal">
+    <h2>Create checklist from template</h2>
+    <p>Choose a name for the new checklist. All items will be copied unchecked.</p>
+    <input class="modal-input" type="text" id="fromTplNameInput" placeholder="New checklist name…" maxlength="60">
+    <div class="modal-actions">
+      <button class="btn-action" onclick="closeModal('modalCreateFromTpl')">Cancel</button>
+      <button class="btn-action accent" onclick="createFromTpl()">Create checklist</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+const STORAGE_KEY = 'checklists_v2';
+let state = { lists: [], templates: [], activeId: null, activeTplId: null, activeTab: 'lists' };
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function load() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  // also try to migrate v1 data
+  if (!raw) {
+    const old = localStorage.getItem('checklists_v1');
+    if (old) {
+      try {
+        const o = JSON.parse(old);
+        state.lists = o.lists || [];
+        state.activeId = o.activeId || null;
+      } catch(e) {}
+    }
+    return;
+  }
+  try { state = { ...state, ...JSON.parse(raw) }; } catch(e) {}
+}
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──
+load();
+document.getElementById('headerDate').textContent = new Date().toLocaleString();
+document.getElementById('newListName').addEventListener('keydown', e => { if(e.key==='Enter') addChecklist(); });
+document.getElementById('newTplName').addEventListener('keydown', e => { if(e.key==='Enter') addTemplate(); });
+switchTab(state.activeTab || 'lists', true);
+
+// ── TAB ──
+function switchTab(tab, init) {
+  state.activeTab = tab;
+  if (!init) save();
+  document.getElementById('tabLists').classList.toggle('active', tab==='lists');
+  document.getElementById('tabTemplates').classList.toggle('active', tab==='templates');
+  document.getElementById('sectionLists').classList.toggle('hidden', tab!=='lists');
+  document.getElementById('sectionTemplates').classList.toggle('hidden', tab!=='templates');
+  renderSidebar();
+  if (tab === 'lists') {
+    if (state.activeId) renderEditor(); else showEmpty();
+  } else {
+    if (state.activeTplId) renderTplEditor(); else showEmpty();
+  }
+}
+
+// ── SIDEBAR ──
+function renderSidebar() {
+  renderListsSidebar();
+  renderTemplatesSidebar();
+}
+
+function renderListsSidebar() {
+  const c = document.getElementById('checklistList');
+  c.innerHTML = '';
+  if (!state.lists.length) { c.innerHTML = '<div class="sidebar-empty">No checklists yet.</div>'; return; }
+  state.lists.forEach(list => {
+    const done = list.items.filter(i=>i.done).length;
+    const total = list.items.length;
+    const el = document.createElement('div');
+    el.className = 'checklist-item' + (list.id===state.activeId?' active':'');
+    el.innerHTML = `<span class="ci-icon">☑</span><span class="ci-name" title="${esc(list.name)}">${esc(list.name)}</span><span class="ci-prog">${done}/${total}</span><button class="ci-del" title="Delete" onclick="event.stopPropagation();deleteList('${list.id}')">×</button>`;
+    el.addEventListener('click', () => openChecklist(list.id));
+    c.appendChild(el);
+  });
+}
+
+function renderTemplatesSidebar() {
+  const c = document.getElementById('templateList');
+  c.innerHTML = '';
+  if (!state.templates.length) { c.innerHTML = '<div class="sidebar-empty">No templates yet.</div>'; return; }
+  state.templates.forEach(tpl => {
+    const el = document.createElement('div');
+    el.className = 'tpl-item' + (tpl.id===state.activeTplId?' active':'');
+    el.innerHTML = `<span class="ci-icon">⊞</span><span class="ci-name" title="${esc(tpl.name)}">${esc(tpl.name)}</span><span class="ci-count">${tpl.items.length} items</span><button class="ci-del" title="Delete" onclick="event.stopPropagation();deleteTemplate('${tpl.id}')">×</button>`;
+    el.addEventListener('click', () => openTemplate(tpl.id));
+    c.appendChild(el);
+  });
+}
+
+// ── CHECKLIST OPS ──
+function addChecklist(name, items) {
+  const input = document.getElementById('newListName');
+  const n = name || input.value.trim();
+  if (!n) return;
+  const list = { id: genId(), name: n, createdAt: new Date().toISOString(), items: items || [] };
+  state.lists.push(list);
+  if (!name) input.value = '';
+  save();
+  switchTab('lists');
+  openChecklist(list.id);
+}
+
+function deleteList(id) {
+  if (!confirm('Delete this checklist?')) return;
+  state.lists = state.lists.filter(l=>l.id!==id);
+  if (state.activeId===id) { state.activeId = state.lists.length ? state.lists[state.lists.length-1].id : null; }
+  save(); renderSidebar();
+  if (state.activeId) renderEditor(); else showEmpty();
+}
+
+function deleteActive() { if (state.activeId) deleteList(state.activeId); }
+
+function openChecklist(id) {
+  state.activeId = id;
+  state.activeTplId = null;
+  save(); renderSidebar(); renderEditor();
+}
+
+function showEmpty() {
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('checklistEditor').style.display = 'none';
+  document.getElementById('templateEditor').style.display = 'none';
+}
+
+// ── CHECKLIST EDITOR ──
+function renderEditor() {
+  const list = state.lists.find(l=>l.id===state.activeId);
+  if (!list) { showEmpty(); return; }
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('checklistEditor').style.display = 'flex';
+  document.getElementById('templateEditor').style.display = 'none';
+  document.getElementById('editName').value = list.name;
+  const created = new Date(list.createdAt);
+  document.getElementById('checklistMeta').textContent = `Created ${created.toLocaleDateString()} · ${list.items.length} item${list.items.length!==1?'s':''}`;
+  const done = list.items.filter(i=>i.done).length;
+  const total = list.items.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = `${done} / ${total}`;
+  renderItemsList(list.items, 'itemsList', false);
+}
+
+function renderItemsList(items, containerId, isTemplate) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = isTemplate ? 'tpl-item-row' : ('item-row' + (item.done?' done':''));
+    row.draggable = true;
+    row.dataset.idx = idx;
+    row.innerHTML = isTemplate
+      ? `<span class="drag-handle" title="Drag to reorder">⠿</span>
+         <input class="tpl-item-text" type="text" value="${esc(item.text)}" oninput="updateTplItemText(${idx},this.value)" placeholder="Item…">
+         <input class="tpl-item-note" type="text" value="${esc(item.note||'')}" oninput="updateTplItemNote(${idx},this.value)" placeholder="Note…">
+         <button class="btn-del-item no-print" onclick="deleteTplItem(${idx})">×</button>`
+      : `<span class="drag-handle" title="Drag to reorder">⠿</span>
+         <input type="checkbox" ${item.done?'checked':''} onchange="toggleItem(${idx},this.checked)">
+         <input class="item-text" type="text" value="${esc(item.text)}" oninput="updateItemText(${idx},this.value)" placeholder="Item…">
+         <input class="item-note" type="text" value="${esc(item.note||'')}" oninput="updateItemNote(${idx},this.value)" placeholder="Note…">
+         <button class="btn-del-item no-print" onclick="deleteItem(${idx})">×</button>`;
+    attachDragEvents(row, containerId, isTemplate);
+    container.appendChild(row);
+  });
+}
+
+// ── DRAG & DROP ──
+let dragSrcIdx = null;
+
+function attachDragEvents(row, containerId, isTemplate) {
+  const handle = row.querySelector('.drag-handle');
+  // Only start drag from handle
+  row.addEventListener('dragstart', e => {
+    dragSrcIdx = parseInt(row.dataset.idx);
+    row.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  row.addEventListener('dragend', () => {
+    row.classList.remove('dragging');
+    document.querySelectorAll('.drag-over').forEach(r => r.classList.remove('drag-over'));
+    dragSrcIdx = null;
+  });
+  row.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll(`#${containerId} .drag-over`).forEach(r => r.classList.remove('drag-over'));
+    row.classList.add('drag-over');
+  });
+  row.addEventListener('drop', e => {
+    e.preventDefault();
+    const destIdx = parseInt(row.dataset.idx);
+    if (dragSrcIdx === null || dragSrcIdx === destIdx) return;
+    if (isTemplate) {
+      const tpl = activeTpl();
+      const [moved] = tpl.items.splice(dragSrcIdx, 1);
+      tpl.items.splice(destIdx, 0, moved);
+      save(); renderTplEditor();
+    } else {
+      const list = activeList();
+      const [moved] = list.items.splice(dragSrcIdx, 1);
+      list.items.splice(destIdx, 0, moved);
+      save(); renderEditor();
+    }
+    row.classList.remove('drag-over');
+  });
+  // Make only handle trigger drag; prevent input fields from blocking
+  if (handle) {
+    handle.addEventListener('mousedown', () => { row.draggable = true; });
+  }
+  row.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('mousedown', e => { row.draggable = false; });
+    inp.addEventListener('mouseup', () => { row.draggable = true; });
+  });
+}
+
+// ── ITEM OPS ──
+function activeList() { return state.lists.find(l=>l.id===state.activeId); }
+
+function addItem() {
+  const text = document.getElementById('newItemText').value.trim();
+  if (!text) return;
+  const note = document.getElementById('newItemNote').value.trim();
+  activeList().items.push({ id: genId(), text, note, done: false });
+  document.getElementById('newItemText').value = '';
+  document.getElementById('newItemNote').value = '';
+  save(); renderEditor(); renderSidebar();
+  document.getElementById('newItemText').focus();
+}
+
+function toggleItem(idx, done) { activeList().items[idx].done = done; save(); renderEditor(); renderSidebar(); }
+function updateItemText(idx, val) { activeList().items[idx].text = val; save(); renderSidebar(); }
+function updateItemNote(idx, val) { activeList().items[idx].note = val; save(); }
+function deleteItem(idx) { activeList().items.splice(idx,1); save(); renderEditor(); renderSidebar(); }
+function checkAll() { activeList().items.forEach(i=>i.done=true); save(); renderEditor(); renderSidebar(); }
+function uncheckAll() { activeList().items.forEach(i=>i.done=false); save(); renderEditor(); renderSidebar(); }
+function renameActive(name) { activeList().name = name; save(); renderSidebar(); }
+
+// ── TEMPLATES ──
+function addTemplate(name) {
+  const input = document.getElementById('newTplName');
+  const n = name || input.value.trim();
+  if (!n) return;
+  const tpl = { id: genId(), name: n, createdAt: new Date().toISOString(), items: [] };
+  state.templates.push(tpl);
+  if (!name) input.value = '';
+  save();
+  switchTab('templates');
+  openTemplate(tpl.id);
+}
+
+function deleteTemplate(id) {
+  if (!confirm('Delete this template?')) return;
+  state.templates = state.templates.filter(t=>t.id!==id);
+  if (state.activeTplId===id) { state.activeTplId = state.templates.length ? state.templates[state.templates.length-1].id : null; }
+  save(); renderSidebar();
+  if (state.activeTplId) renderTplEditor(); else showEmpty();
+}
+
+function deleteTpl() { if (state.activeTplId) deleteTemplate(state.activeTplId); }
+
+function openTemplate(id) {
+  state.activeTplId = id;
+  state.activeId = null;
+  save(); renderSidebar(); renderTplEditor();
+}
+
+function activeTpl() { return state.templates.find(t=>t.id===state.activeTplId); }
+
+function renderTplEditor() {
+  const tpl = activeTpl();
+  if (!tpl) { showEmpty(); return; }
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('checklistEditor').style.display = 'none';
+  document.getElementById('templateEditor').style.display = 'flex';
+  document.getElementById('tplEditName').value = tpl.name;
+  const created = new Date(tpl.createdAt);
+  document.getElementById('tplMeta').textContent = `Created ${created.toLocaleDateString()} · ${tpl.items.length} item${tpl.items.length!==1?'s':''}`;
+  renderItemsList(tpl.items, 'tplItemsList', true);
+}
+
+function renameTpl(name) { activeTpl().name = name; save(); renderSidebar(); }
+
+function addTplItem() {
+  const text = document.getElementById('newTplItemText').value.trim();
+  if (!text) return;
+  const note = document.getElementById('newTplItemNote').value.trim();
+  activeTpl().items.push({ id: genId(), text, note });
+  document.getElementById('newTplItemText').value = '';
+  document.getElementById('newTplItemNote').value = '';
+  save(); renderTplEditor(); renderSidebar();
+  document.getElementById('newTplItemText').focus();
+}
+
+function updateTplItemText(idx, val) { activeTpl().items[idx].text = val; save(); renderSidebar(); }
+function updateTplItemNote(idx, val) { activeTpl().items[idx].note = val; save(); }
+function deleteTplItem(idx) { activeTpl().items.splice(idx,1); save(); renderTplEditor(); renderSidebar(); }
+
+// ── SAVE CHECKLIST AS TEMPLATE ──
+function openSaveAsTemplate() {
+  const list = activeList();
+  document.getElementById('tplNameInput').value = list.name;
+  document.getElementById('modalSaveAsTpl').classList.remove('hidden');
+  setTimeout(() => document.getElementById('tplNameInput').select(), 50);
+}
+
+function saveAsTemplate() {
+  const name = document.getElementById('tplNameInput').value.trim();
+  if (!name) { document.getElementById('tplNameInput').focus(); return; }
+  const list = activeList();
+  const items = list.items.map(i => ({ id: genId(), text: i.text, note: i.note || '' }));
+  const tpl = { id: genId(), name, createdAt: new Date().toISOString(), items };
+  state.templates.push(tpl);
+  save();
+  closeModal('modalSaveAsTpl');
+  renderSidebar();
+  alert(`Template "${name}" saved. Find it in the Templates tab.`);
+}
+
+// ── CREATE CHECKLIST FROM TEMPLATE ──
+function openCreateFromTpl() {
+  const tpl = activeTpl();
+  document.getElementById('fromTplNameInput').value = tpl.name;
+  document.getElementById('modalCreateFromTpl').classList.remove('hidden');
+  setTimeout(() => document.getElementById('fromTplNameInput').select(), 50);
+}
+
+function createFromTpl() {
+  const name = document.getElementById('fromTplNameInput').value.trim();
+  if (!name) { document.getElementById('fromTplNameInput').focus(); return; }
+  const tpl = activeTpl();
+  const items = tpl.items.map(i => ({ id: genId(), text: i.text, note: i.note||'', done: false }));
+  closeModal('modalCreateFromTpl');
+  addChecklist(name, items);
+}
+
+// ── MODAL HELPERS ──
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target===overlay) overlay.classList.add('hidden'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(o => o.classList.add('hidden'));
+});
+
+// ── PRINT ──
+function printChecklist() {
+  const now = new Date();
+  const ts = now.toLocaleString('ca', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  document.getElementById('printTimestamp').textContent = 'Imprès el ' + ts;
+  window.print();
+}
+</script>
+</body>
+</html>
