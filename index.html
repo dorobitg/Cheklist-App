@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DOR space</title>
+<title>MySpace</title>
 <style>
 /* ── TOKENS ── */
 :root {
@@ -736,6 +736,22 @@ document.getElementById('clNewTplName').addEventListener('keydown',e=>{if(e.key=
 // Load data & auto-refresh
 clLoadAll();
 setInterval(()=>{ if(!document.hidden && document.getElementById('view-checklists').classList.contains('active')){ const ai=cl.activeId,at=cl.activeTplId,tab=cl.tab; clLoadAll().then(()=>{ cl.activeId=ai;cl.activeTplId=at;cl.tab=tab; if(tab==='lists'&&ai) clRenderEditor(); else if(tab==='templates'&&at) clRenderTplEditor(); }); } },30000);
+
+// ── HEARTBEAT: SELECT cada 3 dies per evitar que Supabase posi el projecte en pausa ──
+const HB_KEY = 'sb_heartbeat';
+const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+async function sbHeartbeat(){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/checklists?select=id&limit=1`, { headers: SBH });
+    if (r.ok) localStorage.setItem(HB_KEY, Date.now().toString());
+  } catch(e) { /* silenci - no es critic */ }
+}
+// Espera 5s perque la connexio principal s'establexi, despres comprova
+setTimeout(()=>{
+  const last = parseInt(localStorage.getItem(HB_KEY) || '0');
+  if (Date.now() - last > THREE_DAYS) sbHeartbeat();
+  setInterval(sbHeartbeat, THREE_DAYS);
+}, 5000);
 
 // ════════════════════════════════
 //  FINANCES
