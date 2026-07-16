@@ -249,6 +249,81 @@ nav.sidebar {
 /* ── LOADING BAR ── */
 .loading-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--green-light); transition: width .3s; z-index: 300; pointer-events: none; }
 
+/* ── HAMBURGER ── */
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--white); font-size: 1.3rem; line-height: 1; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 39; }
+.sidebar-overlay.open { display: block; }
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--white); border-top: 2px solid var(--green-dark);
+  height: 60px;
+}
+.bottom-nav-inner { display: flex; height: 100%; }
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; cursor: pointer; border: none; background: none;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: #aaa; text-decoration: none; transition: color .1s;
+  border-top: 3px solid transparent;
+}
+.bnav-item.active { color: var(--green-dark); border-top-color: var(--green-dark); }
+.bnav-item .bicon { font-size: 1.2rem; }
+.bnav-ext { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; border: none; background: none; font-size: 0.6rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #aaa; text-decoration: none; border-top: 3px solid transparent; }
+.bnav-ext:hover { color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hamburger { display: none; } /* usem bottom nav en comptes */
+  nav.sidebar { display: none; }
+  .content { margin-left: 0; }
+  .bottom-nav { display: block; }
+  .layout { margin-bottom: 60px; }
+
+  /* Home */
+  .home-wrap { padding: 20px 16px; gap: 20px; }
+  .home-title { font-size: 1.2rem; }
+  .cards-grid { grid-template-columns: 1fr; gap: 12px; }
+  .card { padding: 16px; }
+
+  /* Checklists */
+  .cl-app { grid-template-columns: 1fr; position: relative; }
+  .cl-sidebar {
+    position: fixed; left: 0; top: var(--header-h); bottom: 60px;
+    width: 82vw; max-width: 300px;
+    transform: translateX(-100%); transition: transform .25s ease;
+    z-index: 45; border-right: 2px solid var(--green-dark);
+    display: flex;
+  }
+  .cl-sidebar.open { transform: translateX(0); }
+  .cl-main { padding: 16px; }
+  .cl-name-input { font-size: 1.1rem; width: 100%; }
+  .add-form { flex-direction: column; }
+  .add-form input[type="text"] { width: 100%; }
+  .add-form input[style] { width: 100% !important; }
+  .cl-actions { gap: 6px; }
+  .btn-act { padding: 6px 10px; font-size: .76rem; }
+  .item-note, .tpl-inote { display: none; }
+
+  /* Finances */
+  .fin-wrap { padding: 16px; gap: 16px; }
+  .fin-header { flex-direction: column; align-items: flex-start; }
+  .fin-controls { width: 100%; flex-direction: column; }
+  .fin-select, .btn-upload, .btn-sheets { width: 100%; justify-content: center; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 12px 14px; }
+  .kpi-val { font-size: 1.1rem; }
+  .cat-bar-wrap { display: none; }
+  .bar-chart { gap: 4px; }
+  .bar { width: 12px; }
+}
+
+@media (max-width: 400px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+}
+
 /* ── PRINT ── */
 @media print {
   header, nav.sidebar, .cl-tabs, .cl-new-form, .add-form, .cl-actions,
@@ -270,10 +345,12 @@ nav.sidebar {
 
 <header>
   <div class="header-logo">My<span>Space</span></div>
+  <button class="hamburger" id="hamburgerBtn" onclick="clToggleSidebar()" style="display:none;" aria-label="Obrir llistes">☰</button>
   <span class="sync-status" id="syncStatus" style="display:none;"></span>
   <span id="headerDate"></span>
 </header>
 
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="clCloseSidebar()"></div>
 <div class="layout">
 
   <!-- ── SIDEBAR ── -->
@@ -327,7 +404,7 @@ nav.sidebar {
     <div class="view" id="view-checklists">
       <div class="cl-app">
         <!-- CL SIDEBAR -->
-        <div class="cl-sidebar">
+        <div class="cl-sidebar" id="clSidebarEl">
           <div class="cl-tabs">
             <button class="cl-tab active" id="clTabLists"      onclick="clSwitchTab('lists')">Llistes</button>
             <button class="cl-tab"        id="clTabTemplates"  onclick="clSwitchTab('templates')">Plantilles</button>
@@ -474,13 +551,35 @@ function showView(id) {
     document.getElementById('view-'+v).classList.toggle('active', v===id);
     const n = document.getElementById('nav-'+v);
     if (n) n.classList.toggle('active', v===id);
+    const bn = document.getElementById('bnav-'+v);
+    if (bn) bn.classList.toggle('active', v===id);
   });
   const ss = document.getElementById('syncStatus');
   ss.style.display = id === 'checklists' ? 'inline' : 'none';
+  // Mostra/oculta hamburger al mòbil quan estem a checklists
+  const hb = document.getElementById('hamburgerBtn');
+  if (window.innerWidth <= 768) hb.style.display = id === 'checklists' ? 'block' : 'none';
+  clCloseSidebar();
   localStorage.setItem('mv', id);
 }
+
+// Sidebar mòbil (checklists)
+function clToggleSidebar(){
+  const sb = document.getElementById('clSidebarEl');
+  const ov = document.getElementById('sidebarOverlay');
+  const isOpen = sb.classList.contains('open');
+  if(isOpen){ clCloseSidebar(); } else { sb.classList.add('open'); ov.classList.add('open'); }
+}
+function clCloseSidebar(){
+  const sb = document.getElementById('clSidebarEl');
+  const ov = document.getElementById('sidebarOverlay');
+  if(sb){ sb.classList.remove('open'); }
+  if(ov){ ov.classList.remove('open'); }
+}
+
 const savedView = localStorage.getItem('mv');
 if (savedView && VIEWS.includes(savedView)) showView(savedView);
+else showView('home');
 
 const now = new Date();
 const ds = now.toLocaleDateString('ca',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
@@ -588,8 +687,8 @@ function clShowEmpty(){
   document.getElementById('clListEditor').classList.remove('active');
   document.getElementById('clTplEditor').classList.remove('active');
 }
-function clOpenChecklist(id){ cl.activeId=id; cl.activeTplId=null; clRenderSidebar(); clRenderEditor(); }
-function clOpenTemplate(id){ cl.activeTplId=id; cl.activeId=null; clRenderSidebar(); clRenderTplEditor(); }
+function clOpenChecklist(id){ cl.activeId=id; cl.activeTplId=null; clRenderSidebar(); clRenderEditor(); if(window.innerWidth<=768) clCloseSidebar(); }
+function clOpenTemplate(id){ cl.activeTplId=id; cl.activeId=null; clRenderSidebar(); clRenderTplEditor(); if(window.innerWidth<=768) clCloseSidebar(); }
 
 // Render editors
 function clRenderEditor(){
@@ -877,5 +976,22 @@ function finRender(rows,ytdRows,year,month){
   `;
 }
 </script>
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bnav-item active" id="bnav-home" onclick="showView('home')">
+      <span class="bicon">⌂</span>Inici
+    </button>
+    <button class="bnav-item" id="bnav-checklists" onclick="showView('checklists')">
+      <span class="bicon">☑</span>Llistes
+    </button>
+    <button class="bnav-item" id="bnav-finances" onclick="showView('finances')">
+      <span class="bicon">📊</span>Finances
+    </button>
+    <a class="bnav-ext" href="https://docs.google.com/spreadsheets" target="_blank">
+      <span class="bicon">📄</span>Sheets
+    </a>
+  </div>
+</nav>
 </body>
 </html>
