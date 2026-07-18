@@ -6,7 +6,7 @@
 <title>Espai iDor</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
- 
+
 :root {
   --g1: #3D4127;
   --g2: #BAC095;
@@ -33,10 +33,10 @@ body {
   background: var(--bg); color: var(--text); min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
- 
+
 /* ── LOADING BAR ── */
 .loading-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--g2); transition: width .3s; z-index: 999; pointer-events: none; }
- 
+
 /* ── HEADER ── */
 header {
   height: var(--header-h);
@@ -62,10 +62,10 @@ header {
 .sync-label { font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 0.02em; }
 #headerDate { font-size: 0.68rem; color: rgba(255,255,255,0.35); letter-spacing: 0.02em; }
 .hamburger { display: none; background: none; border: none; cursor: pointer; color: var(--white); font-size: 1.2rem; padding: 4px; }
- 
+
 /* ── LAYOUT ── */
 .layout { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
- 
+
 /* ── SIDEBAR ── */
 nav.sidebar {
   width: var(--sidebar-w); background: rgba(255,255,255,0.7);
@@ -100,16 +100,16 @@ nav.sidebar {
 .nav-ext:hover { background: rgba(0,0,0,0.05); color: var(--text); }
 .ext-badge { font-size: 0.58rem; color: var(--text3); margin-left: auto; }
 .nav-bottom { margin-top: auto; padding: 16px; font-size: 0.65rem; color: var(--text3); line-height: 1.6; }
- 
+
 /* ── OVERLAY ── */
 .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 39; backdrop-filter: blur(2px); }
 .sidebar-overlay.open { display: block; }
- 
+
 /* ── CONTENT ── */
 .content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
 .view { display: none; flex: 1; flex-direction: column; }
 .view.active { display: flex; }
- 
+
 /* ════════════ HOME ════════════ */
 .hero-img-wrap {
   position: relative; width: 100%; height: 220px; overflow: hidden;
@@ -135,7 +135,7 @@ nav.sidebar {
 .home-title { font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; line-height: 1.1; }
 .home-title span { color: var(--g1); }
 .home-sub { font-size: 0.9rem; color: var(--text2); font-weight: 400; }
- 
+
 /* App cards */
 .cards-section-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
 .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; }
@@ -161,7 +161,7 @@ nav.sidebar {
 .card-title { font-size: 0.9rem; font-weight: 700; color: var(--text); }
 .card-desc { font-size: 0.78rem; color: var(--text2); line-height: 1.5; }
 .card-cta { font-size: 0.75rem; font-weight: 600; color: var(--g1); margin-top: auto; display: flex; align-items: center; gap: 3px; }
- 
+
 /* RSS Section */
 .rss-section { display: flex; flex-direction: column; gap: 12px; }
 .rss-feeds { display: flex; flex-direction: column; gap: 10px; }
@@ -191,7 +191,7 @@ nav.sidebar {
 .rss-pill-sismo .rss-pill-title { color: #8a5a00; }
 .rss-loading { padding: 12px 16px; font-size: 0.78rem; color: var(--text3); font-style: italic; }
 .rss-err { padding: 10px 16px; font-size: 0.75rem; color: var(--text3); }
- 
+
 /* ════════════ CHECKLISTS ════════════ */
 .cl-app { display: grid; grid-template-columns: 260px 1fr; flex: 1; min-height: 0; }
 .cl-sidebar {
@@ -285,7 +285,7 @@ nav.sidebar {
 .btn-act.danger { color: var(--red); border-color: rgba(255,59,48,0.2); }
 .btn-act.danger:hover { background: rgba(255,59,48,0.08); }
 .print-ts { display: none; font-size: .72rem; color: var(--text3); }
- 
+
 /* ════════════ FINANCES ════════════ */
 .fin-wrap { padding: 28px 36px; display: flex; flex-direction: column; gap: 22px; overflow-y: auto; flex: 1; }
 .fin-header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
@@ -328,7 +328,7 @@ nav.sidebar {
 .fin-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 60px; text-align: center; color: var(--text3); }
 .fin-empty-icon { font-size: 2.5rem; }
 .fin-empty p { font-size: .88rem; line-height: 1.7; }
- 
+
 /* ════════════ MODAL ════════════ */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(4px); }
 .modal-overlay.hidden { display: none; }
@@ -338,7 +338,7 @@ nav.sidebar {
 .modal-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: .9rem; outline: none; margin-bottom: 18px; font-family: inherit; background: var(--bg); }
 .modal-input:focus { border-color: var(--g1); background: var(--white); }
 .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
- 
+
 /* ════════════ BOTTOM NAV (mobile) ════════════ */
 .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); height: 60px; padding-bottom: env(safe-area-inset-bottom); }
 .bottom-nav-inner { display: flex; height: 100%; }
@@ -347,7 +347,7 @@ nav.sidebar {
 .bnav-item .bicon { font-size: 1.25rem; }
 .bnav-ext { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; border: none; background: none; font-size: 0.58rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text3); text-decoration: none; }
 .bnav-ext:hover { color: var(--g1); }
- 
+
 /* ════════════ RESPONSIVE ════════════ */
 @media (max-width: 768px) {
   .hamburger { display: block; }
@@ -383,7 +383,7 @@ nav.sidebar {
   .cards-grid { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: 1fr; }
 }
- 
+
 /* ── PRINT ── */
 @media print {
   header, nav.sidebar, .cl-tabs, .cl-new-form, .add-form, .cl-actions,
@@ -399,9 +399,9 @@ nav.sidebar {
 </style>
 </head>
 <body>
- 
+
 <div class="loading-bar" id="loadingBar" style="width:0%"></div>
- 
+
 <header>
   <div class="header-logo">Espai <span>iDor</span></div>
   <button class="hamburger" id="hamburgerBtn" style="display:none" onclick="clToggleSidebar()">☰</button>
@@ -411,11 +411,11 @@ nav.sidebar {
   </div>
   <span id="headerDate"></span>
 </header>
- 
+
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="clCloseSidebar()"></div>
- 
+
 <div class="layout">
- 
+
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="nav-section">Aplicacions</div>
@@ -438,10 +438,10 @@ nav.sidebar {
     </a>
     <div class="nav-bottom">Espai iDor · v3.0<br>Supabase · GitHub Pages</div>
   </nav>
- 
+
   <!-- CONTENT -->
   <div class="content">
- 
+
     <!-- HOME -->
     <div class="view active" id="view-home">
         <!-- HERO IMAGE -->
@@ -452,7 +452,7 @@ nav.sidebar {
           </div>
         </div>
       <div class="home-wrap">
- 
+
         <div>
           <div class="cards-section-title">Aplicacions</div>
           <div class="cards-grid">
@@ -494,7 +494,7 @@ nav.sidebar {
             </div>
           </div>
         </div>
- 
+
         <!-- RSS FEEDS -->
         <div class="rss-section">
           <div class="cards-section-title">Notícies en directe</div>
@@ -504,7 +504,7 @@ nav.sidebar {
         </div>
       </div>
     </div>
- 
+
     <!-- CHECKLISTS -->
     <div class="view" id="view-checklists">
       <div class="cl-app">
@@ -582,7 +582,7 @@ nav.sidebar {
         </div>
       </div>
     </div>
- 
+
     <!-- FINANCES -->
     <div class="view" id="view-finances">
       <div class="fin-wrap">
@@ -612,10 +612,10 @@ nav.sidebar {
         </div>
       </div>
     </div>
- 
+
   </div><!-- /content -->
 </div><!-- /layout -->
- 
+
 <!-- MODALS -->
 <div class="modal-overlay hidden" id="modalSaveAsTpl">
   <div class="modal">
@@ -639,7 +639,7 @@ nav.sidebar {
     </div>
   </div>
 </div>
- 
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
@@ -650,7 +650,7 @@ nav.sidebar {
     <a class="bnav-ext" href="https://calendariurus.netlify.app" target="_blank">           <span class="bicon">📅</span>Urús</a>
   </div>
 </nav>
- 
+
 <script>
 // ════════════════════════════════
 //  NAVIGATION
@@ -670,12 +670,12 @@ function showView(id) {
 }
 function clToggleSidebar(){ const s=document.getElementById('clSidebarEl'),o=document.getElementById('sidebarOverlay'); s.classList.contains('open')?clCloseSidebar():(s.classList.add('open'),o.classList.add('open')); }
 function clCloseSidebar(){ const s=document.getElementById('clSidebarEl'),o=document.getElementById('sidebarOverlay'); s&&s.classList.remove('open'); o&&o.classList.remove('open'); }
- 
+
 const now = new Date();
 const ds = now.toLocaleDateString('ca',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 document.getElementById('headerDate').textContent = ds;
 document.getElementById('homeDate').textContent = ds;
- 
+
 // Hero image aleatoria de Picsum (seed basat en el dia per ser consistent)
 (function loadHero(){
   const seed = now.getFullYear()*10000 + (now.getMonth()+1)*100 + now.getDate();
@@ -684,17 +684,17 @@ document.getElementById('homeDate').textContent = ds;
   img.src = `https://picsum.photos/seed/${seed}/1200/440`;
   img.onload = () => { img.style.opacity = '1'; };
 })();
- 
+
 const savedView = localStorage.getItem('mv');
 if(savedView && VIEWS.includes(savedView)) showView(savedView); else showView('home');
- 
+
 // ════════════════════════════════
 //  SUPABASE
 // ════════════════════════════════
 const SB_URL = 'https://kbdiwlrkgeablkxkgyoo.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtiZGl3bHJrZ2VhYmxreGtneW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzU5NDIsImV4cCI6MjA5Njg1MTk0Mn0.Z4pMNdIsuTmps9WjUQKdbslgcjTyFRDIPFBPf5AHz60';
 const SBH = {'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
- 
+
 function setSync(msg, cls) {
   const dot = document.getElementById('syncDot');
   const lbl = document.getElementById('syncLabel');
@@ -706,7 +706,7 @@ async function sbSelect(){ const r=await fetch(`${SB_URL}/rest/v1/checklists?sel
 async function sbInsert(row){ const r=await fetch(`${SB_URL}/rest/v1/checklists`,{method:'POST',headers:{...SBH,'Prefer':'return=representation'},body:JSON.stringify(row)}); if(!r.ok) throw new Error(); const d=await r.json(); return d[0]; }
 async function sbUpdate(id,row){ const r=await fetch(`${SB_URL}/rest/v1/checklists?id=eq.${id}`,{method:'PATCH',headers:{...SBH,'Prefer':'return=representation'},body:JSON.stringify(row)}); if(!r.ok) throw new Error(); }
 async function sbDelete(id){ const r=await fetch(`${SB_URL}/rest/v1/checklists?id=eq.${id}`,{method:'DELETE',headers:SBH}); if(!r.ok) throw new Error(); }
- 
+
 // ════════════════════════════════
 //  CHECKLISTS
 // ════════════════════════════════
@@ -714,7 +714,7 @@ let cl = {lists:[],templates:[],activeId:null,activeTplId:null,tab:'lists'};
 let saveTimer = null;
 function genId(){ return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
- 
+
 async function clLoadAll(){
   setSync('Connectant…',''); setLoad(20);
   try {
@@ -739,7 +739,7 @@ async function clSaveTpl(tpl){
   catch(e){ setSync('Error','err'); }
 }
 function scheduleSave(item,isTpl){ clearTimeout(saveTimer); saveTimer=setTimeout(()=>isTpl?clSaveTpl(item):clSaveList(item),700); }
- 
+
 function clSwitchTab(tab){
   cl.tab=tab;
   document.getElementById('clTabLists').classList.toggle('active',tab==='lists');
@@ -889,15 +889,15 @@ document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(o=>o.classList.add('hidden'));});
 document.getElementById('clNewListName').addEventListener('keydown',e=>{if(e.key==='Enter')clAddChecklist();});
 document.getElementById('clNewTplName').addEventListener('keydown',e=>{if(e.key==='Enter')clAddTemplate();});
- 
+
 clLoadAll();
 setInterval(()=>{if(!document.hidden&&document.getElementById('view-checklists').classList.contains('active')){const ai=cl.activeId,at=cl.activeTplId,tab=cl.tab;clLoadAll().then(()=>{cl.activeId=ai;cl.activeTplId=at;cl.tab=tab;if(tab==='lists'&&ai)clRenderEditor();else if(tab==='templates'&&at)clRenderTplEditor();});}},30000);
- 
+
 // Heartbeat
 const HB_KEY='sb_heartbeat',THREE_DAYS=3*24*60*60*1000;
 async function sbHeartbeat(){try{const r=await fetch(`${SB_URL}/rest/v1/checklists?select=id&limit=1`,{headers:SBH});if(r.ok)localStorage.setItem(HB_KEY,Date.now().toString());}catch(e){}}
 setTimeout(()=>{const last=parseInt(localStorage.getItem(HB_KEY)||'0');if(Date.now()-last>THREE_DAYS)sbHeartbeat();setInterval(sbHeartbeat,THREE_DAYS);},5000);
- 
+
 // ════════════════════════════════
 //  RSS FEEDS
 // ════════════════════════════════
@@ -906,8 +906,29 @@ const RSS_FEEDS = [
   { name: 'Barça Blaugranes', url: 'https://www.barcablaugranes.com/rss/index.xml', cls: 'rss-pill-barca', icon: '⚽' },
   { name: 'Sismes Catalunya', url: 'https://sismocat.icgc.cat/sisweb2/sisweb_api_rss_external.php?consulta=2init&lang=es', cls: 'rss-pill-sismo', icon: '🌍' },
 ];
-const CORS_PROXY = 'https://api.allorigins.win/get?url=';
- 
+// Provem múltiples proxies fins que un funcioni
+const CORS_PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+];
+
+async function fetchWithProxy(url) {
+  for (const proxyFn of CORS_PROXIES) {
+    try {
+      const r = await fetch(proxyFn(url), { signal: AbortSignal.timeout(6000) });
+      if (!r.ok) continue;
+      const text = await r.text();
+      // allorigins retorna JSON amb .contents
+      if (text.trim().startsWith('{')) {
+        try { const j = JSON.parse(text); if (j.contents) return j.contents; } catch(e) {}
+      }
+      return text;
+    } catch(e) { continue; }
+  }
+  throw new Error('Tots els proxies han fallat');
+}
+
 function rssRelativeDate(dateStr){
   if(!dateStr) return '';
   const d = new Date(dateStr); if(isNaN(d)) return dateStr;
@@ -917,7 +938,7 @@ function rssRelativeDate(dateStr){
   if(diff<1440) return `fa ${Math.floor(diff/60)}h`;
   return d.toLocaleDateString('ca',{day:'numeric',month:'short'});
 }
- 
+
 async function loadRSS(feed){
   const block = document.createElement('div'); block.className='rss-feed-block';
   block.innerHTML=`<div class="rss-feed-header"><span>${feed.icon}</span><span class="rss-feed-name">${feed.name}</span><span class="rss-feed-status" id="rss-status-${feed.name.replace(/\s/g,'_')}">Carregant…</span></div><div class="rss-pills" id="rss-pills-${feed.name.replace(/\s/g,'_')}"><div class="rss-loading">Carregant…</div></div>`;
@@ -925,9 +946,8 @@ async function loadRSS(feed){
   const statusEl = document.getElementById('rss-status-'+feed.name.replace(/\s/g,'_'));
   const pillsEl  = document.getElementById('rss-pills-'+feed.name.replace(/\s/g,'_'));
   try {
-    const resp = await fetch(CORS_PROXY + encodeURIComponent(feed.url));
-    const json = await resp.json();
-    const xml  = new DOMParser().parseFromString(json.contents, 'text/xml');
+    const xmlText = await fetchWithProxy(feed.url);
+    const xml  = new DOMParser().parseFromString(xmlText, 'text/xml');
     const items = Array.from(xml.querySelectorAll('item')).slice(0,10);
     if(!items.length){ pillsEl.innerHTML='<div class="rss-err">Sense resultats</div>'; statusEl.textContent='0 notícies'; return; }
     pillsEl.innerHTML = items.map(item=>{
@@ -941,14 +961,14 @@ async function loadRSS(feed){
     statusEl.textContent='Error';
   }
 }
- 
+
 async function loadAllRSS(){
   document.getElementById('rssContainer').innerHTML='';
   for(const feed of RSS_FEEDS) await loadRSS(feed);
 }
 loadAllRSS();
 setInterval(loadAllRSS, 5*60*1000); // refresca cada 5 minuts
- 
+
 // ════════════════════════════════
 //  FINANCES
 // ════════════════════════════════
@@ -1019,4 +1039,3 @@ function finRender(rows,ytdRows,year,month){
 </script>
 </body>
 </html>
- 
