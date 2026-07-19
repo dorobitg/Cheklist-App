@@ -35,6 +35,53 @@ body {
 }
 
 /* ── LOADING BAR ── */
+/* ── LOCK SCREEN ── */
+.lock-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: linear-gradient(160deg, #2c3018 0%, #3D4127 50%, #1a1e0e 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 32px; transition: opacity .4s ease;
+}
+.lock-screen.hidden { opacity: 0; pointer-events: none; }
+.lock-logo {
+  font-size: 1.1rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--white);
+}
+.lock-logo span { color: var(--g2); }
+.lock-icon { font-size: 2.8rem; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+.lock-title { font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.7); letter-spacing: 0.02em; }
+.lock-dots { display: flex; gap: 14px; margin: 4px 0; }
+.lock-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.4);
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.lock-dot.filled { background: var(--g2); border-color: var(--g2); transform: scale(1.1); }
+.lock-dot.error { background: var(--red); border-color: var(--red); }
+.lock-pad {
+  display: grid; grid-template-columns: repeat(3, 68px);
+  gap: 12px;
+}
+.lock-btn {
+  width: 68px; height: 68px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: rgba(255,255,255,0.12);
+  color: var(--white); font-size: 1.4rem; font-weight: 600;
+  font-family: inherit;
+  transition: background .1s, transform .1s;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.lock-btn:hover { background: rgba(255,255,255,0.2); }
+.lock-btn:active { transform: scale(0.93); background: rgba(255,255,255,0.28); }
+.lock-btn.del { font-size: 1.1rem; }
+.lock-btn.empty { background: transparent; cursor: default; pointer-events: none; }
+.lock-error { font-size: 0.8rem; color: var(--red); font-weight: 600; letter-spacing: 0.04em; min-height: 20px; transition: opacity .2s; }
+.lock-error.hidden { opacity: 0; }
+
+.lock-screen { display: flex; }
+.lock-screen.gone { display: none; }
+
 .loading-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--g2); transition: width .3s; z-index: 999; pointer-events: none; }
 
 /* ── HEADER ── */
@@ -640,6 +687,34 @@ nav.sidebar {
   </div>
 </div>
 
+<!-- LOCK SCREEN -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-logo">Espai <span>iDor</span></div>
+  <div class="lock-icon">🔒</div>
+  <div class="lock-title">Introdueix el PIN</div>
+  <div class="lock-dots" id="lockDots">
+    <div class="lock-dot" id="dot0"></div>
+    <div class="lock-dot" id="dot1"></div>
+    <div class="lock-dot" id="dot2"></div>
+    <div class="lock-dot" id="dot3"></div>
+  </div>
+  <div class="lock-error hidden" id="lockError">PIN incorrecte</div>
+  <div class="lock-pad">
+    <button class="lock-btn" onclick="lockKey('1')">1</button>
+    <button class="lock-btn" onclick="lockKey('2')">2</button>
+    <button class="lock-btn" onclick="lockKey('3')">3</button>
+    <button class="lock-btn" onclick="lockKey('4')">4</button>
+    <button class="lock-btn" onclick="lockKey('5')">5</button>
+    <button class="lock-btn" onclick="lockKey('6')">6</button>
+    <button class="lock-btn" onclick="lockKey('7')">7</button>
+    <button class="lock-btn" onclick="lockKey('8')">8</button>
+    <button class="lock-btn" onclick="lockKey('9')">9</button>
+    <button class="lock-btn empty"></button>
+    <button class="lock-btn" onclick="lockKey('0')">0</button>
+    <button class="lock-btn del" onclick="lockDel()">⌫</button>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
@@ -903,7 +978,7 @@ setTimeout(()=>{const last=parseInt(localStorage.getItem(HB_KEY)||'0');if(Date.n
 // ════════════════════════════════
 const RSS_FEEDS = [
   { name: 'El Punt Avui', url: 'http://www.elpuntavui.cat/barcelona/nacional.feed?type=rss', cls: 'rss-pill-mag', icon: '📰' },
-  { name: 'Barça Blaugranes', url: 'https://www.barcablaugranes.com/rss/index.xml', cls: 'rss-pill-barca', icon: '⚽' },
+  { name: 'Barça Blaugranes', url: 'https://www.barcablaugranes.com/rss/current', cls: 'rss-pill-barca', icon: '⚽' },
   { name: 'Sismes Catalunya', url: 'https://sismocat.icgc.cat/sisweb2/sisweb_api_rss_external.php?consulta=2init&lang=es', cls: 'rss-pill-sismo', icon: '🌍' },
 ];
 // Provem múltiples proxies fins que un funcioni
@@ -1036,6 +1111,127 @@ function finRender(rows,ytdRows,year,month){
     ${mData.length?`<div class="chart-section"><div class="chart-title">Balanç per mesos ${year?'· '+year:''}</div><div class="chart-wrap"><div class="bar-chart">${mData.map(m=>`<div class="bar-group"><div class="bar-pair"><div class="bar inc" style="height:${Math.round(m.inc/maxBar*BH)}px" title="${fmt(m.inc)}"></div><div class="bar exp" style="height:${Math.round(m.exp/maxBar*BH)}px" title="${fmt(m.exp)}"></div>${m.sav>0?`<div class="bar sav" style="height:${Math.round(m.sav/maxBar*BH)}px" title="${fmt(m.sav)}"></div>`:''}</div><div class="bar-label">${m.label}</div></div>`).join('')}</div><div class="legend"><div class="leg-item"><div class="leg-dot" style="background:var(--g1)"></div>Ingressos</div><div class="leg-item"><div class="leg-dot" style="background:var(--g2)"></div>Despeses</div><div class="leg-item"><div class="leg-dot" style="background:#8fa050"></div>Estalvi</div></div></div></div>`:''}
     ${catList.length?`<div class="chart-section"><div class="chart-title">Despesa per categoria · ${period}</div><div class="chart-wrap"><div class="cat-grid">${catList.map(([cat,amt])=>`<div class="cat-row"><div class="cat-name">${cat}</div><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${Math.round(amt/maxCat*100)}%"></div></div><div class="cat-amt">${fmt(amt)}</div></div>`).join('')}</div></div></div>`:''}`;
 }
+
+// ════════════════════════════════
+//  PIN LOCK
+// ════════════════════════════════
+const SESSION_KEY = 'espai_idor_auth';
+const SESSION_TTL = 8 * 60 * 60 * 1000; // 8 hores
+
+let lockPin = '';
+let lockVerifying = false;
+
+// Comprova si ja hi ha sessió vàlida
+(function checkSession() {
+  const s = localStorage.getItem(SESSION_KEY);
+  if (s) {
+    try {
+      const { ts } = JSON.parse(s);
+      if (Date.now() - ts < SESSION_TTL) { unlockApp(false); return; }
+    } catch(e) {}
+  }
+  // Mostra pantalla de bloqueig
+  document.getElementById('lockScreen').classList.remove('hidden');
+})();
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function lockKey(digit) {
+  if (lockVerifying || lockPin.length >= 4) return;
+  lockPin += digit;
+  updateDots();
+  if (lockPin.length === 4) verifyPin();
+}
+
+function lockDel() {
+  if (lockVerifying) return;
+  lockPin = lockPin.slice(0, -1);
+  updateDots();
+  hideLockError();
+}
+
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.classList.toggle('filled', i < lockPin.length);
+    dot.classList.remove('error');
+  }
+}
+
+function showLockError() {
+  const err = document.getElementById('lockError');
+  err.classList.remove('hidden');
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.classList.remove('filled');
+    dot.classList.add('error');
+  }
+  setTimeout(() => {
+    hideLockError();
+    for (let i = 0; i < 4; i++) document.getElementById('dot'+i).classList.remove('error');
+  }, 1200);
+}
+
+function hideLockError() {
+  document.getElementById('lockError').classList.add('hidden');
+}
+
+async function verifyPin() {
+  lockVerifying = true;
+  try {
+    // Calcula hash del PIN introduït
+    const hash = await sha256(lockPin);
+    // Consulta Supabase
+    const r = await fetch(`${SB_URL}/rest/v1/app_config?key=eq.pin_hash&select=value`, { headers: SBH });
+    const data = await r.json();
+    if (data && data[0] && data[0].value === hash) {
+      // PIN correcte
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ ts: Date.now() }));
+      unlockApp(true);
+    } else {
+      showLockError();
+      lockPin = '';
+      lockVerifying = false;
+    }
+  } catch(e) {
+    // Si no hi ha connexió, bloqueja
+    showLockError();
+    lockPin = '';
+    lockVerifying = false;
+  }
+}
+
+function unlockApp(animate) {
+  const ls = document.getElementById('lockScreen');
+  if (animate) {
+    ls.style.opacity = '0';
+    setTimeout(() => ls.classList.add('gone'), 400);
+  } else {
+    ls.classList.add('gone');
+  }
+}
+
+// Teclat físic
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lockScreen').classList.contains('gone')) return;
+  if (e.key >= '0' && e.key <= '9') lockKey(e.key);
+  if (e.key === 'Backspace') lockDel();
+});
+
+// Caducitat sessió: rebloqueja si porta massa temps inactiu
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  const s = localStorage.getItem(SESSION_KEY);
+  if (!s) { location.reload(); return; }
+  try {
+    const { ts } = JSON.parse(s);
+    if (Date.now() - ts > SESSION_TTL) { localStorage.removeItem(SESSION_KEY); location.reload(); }
+  } catch(e) { location.reload(); }
+});
+
 </script>
 </body>
 </html>
