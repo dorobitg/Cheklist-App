@@ -867,7 +867,7 @@ nav.sidebar {
 </div>
 
 <!-- LOCK SCREEN -->
-<div class="lock-screen" id="lockScreen">
+<div class="lock-screen gone" id="lockScreen">
   <div class="lock-logo">Espai <span>iDor</span></div>
   <div class="lock-icon">🔒</div>
   <div class="lock-title">Introdueix el PIN</div>
@@ -1615,11 +1615,16 @@ let lockVerifying = false;
   if (s) {
     try {
       const { ts } = JSON.parse(s);
-      if (Date.now() - ts < SESSION_TTL) { unlockApp(false); return; }
+      if (Date.now() - ts < SESSION_TTL) {
+        // Sessió vàlida: deixa la pantalla amagada
+        return;
+      }
     } catch(e) {}
   }
-  // Mostra pantalla de bloqueig
-  document.getElementById('lockScreen').classList.remove('hidden');
+  // No hi ha sessió vàlida: mostra el bloqueig
+  const ls = document.getElementById('lockScreen');
+  ls.classList.remove('gone');
+  ls.style.opacity = '1';
 })();
 
 async function sha256(text) {
@@ -1695,8 +1700,9 @@ async function verifyPin() {
 function unlockApp(animate) {
   const ls = document.getElementById('lockScreen');
   if (animate) {
+    ls.style.transition = 'opacity .4s ease';
     ls.style.opacity = '0';
-    setTimeout(() => ls.classList.add('gone'), 400);
+    setTimeout(() => { ls.classList.add('gone'); ls.style.opacity = ''; }, 420);
   } else {
     ls.classList.add('gone');
   }
@@ -1713,11 +1719,24 @@ document.addEventListener('keydown', e => {
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) return;
   const s = localStorage.getItem(SESSION_KEY);
-  if (!s) { location.reload(); return; }
+  if (!s) {
+    const ls = document.getElementById('lockScreen');
+    ls.classList.remove('gone'); ls.style.opacity = '1';
+    lockPin = ''; lockVerifying = false; updateDots();
+    return;
+  }
   try {
     const { ts } = JSON.parse(s);
-    if (Date.now() - ts > SESSION_TTL) { localStorage.removeItem(SESSION_KEY); location.reload(); }
-  } catch(e) { location.reload(); }
+    if (Date.now() - ts > SESSION_TTL) {
+      localStorage.removeItem(SESSION_KEY);
+      const ls = document.getElementById('lockScreen');
+      ls.classList.remove('gone'); ls.style.opacity = '1';
+      lockPin = ''; lockVerifying = false; updateDots();
+    }
+  } catch(e) {
+    const ls = document.getElementById('lockScreen');
+    ls.classList.remove('gone'); ls.style.opacity = '1';
+  }
 });
 
 </script>
