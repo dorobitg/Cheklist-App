@@ -918,7 +918,7 @@ function showView(id) {
     const b = document.getElementById('bnav-'+v); if(b) b.classList.toggle('active', v===id);
   });
   document.getElementById('syncWrap').style.display = id==='checklists' ? 'flex' : 'none';
-  if (id === 'notes' && !notesAllData.length) notesLoad();
+  if (id === 'checklists' && !cl.lists.length && !cl.templates.length) clLoadAll();
   if (id === 'notes' && !notesAllData.length) notesLoad();
   const hb = document.getElementById('hamburgerBtn');
   if(window.innerWidth <= 768) hb.style.display = id==='checklists' ? 'block' : 'none';
@@ -1147,7 +1147,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
 document.getElementById('clNewListName').addEventListener('keydown',e=>{if(e.key==='Enter')clAddChecklist();});
 document.getElementById('clNewTplName').addEventListener('keydown',e=>{if(e.key==='Enter')clAddTemplate();});
 
-clLoadAll();
+// Only load checklists when that view is active
+if (document.getElementById('view-checklists').classList.contains('active')) clLoadAll();
 setInterval(()=>{if(!document.hidden&&document.getElementById('view-checklists').classList.contains('active')){const ai=cl.activeId,at=cl.activeTplId,tab=cl.tab;clLoadAll().then(()=>{cl.activeId=ai;cl.activeTplId=at;cl.tab=tab;if(tab==='lists'&&ai)clRenderEditor();else if(tab==='templates'&&at)clRenderTplEditor();});}},30000);
 
 // Heartbeat
