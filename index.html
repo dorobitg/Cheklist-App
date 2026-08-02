@@ -1225,14 +1225,15 @@ nav.sidebar {
 const VIEWS = ['home','checklists','finances','notes','leroom'];
 function showView(id) {
   VIEWS.forEach(v => {
-    document.getElementById('view-'+v).classList.toggle('active', v===id);
+    const el = document.getElementById('view-'+v);
+    if (el) el.classList.toggle('active', v===id);
     const n = document.getElementById('nav-'+v); if(n) n.classList.toggle('active', v===id);
     const b = document.getElementById('bnav-'+v); if(b) b.classList.toggle('active', v===id);
   });
   document.getElementById('syncWrap').style.display = id==='checklists' ? 'flex' : 'none';
   if (id === 'checklists' && !cl.lists.length && !cl.templates.length) clLoadAll();
-  if (id === 'notes' && !notesAllData.length) notesLoad();
-  if (id === 'leroom') lrInit();
+  if (id === 'notes' && typeof notesLoad === 'function' && !notesAllData.length) notesLoad();
+  if (id === 'leroom' && typeof lrInit === 'function') lrInit();
   const hb = document.getElementById('hamburgerBtn');
   if(window.innerWidth <= 768) hb.style.display = id==='checklists' ? 'block' : 'none';
   clCloseSidebar();
@@ -1255,8 +1256,7 @@ document.getElementById('homeDate').textContent = ds;
   img.onload = () => { img.style.opacity = '1'; };
 })();
 
-const savedView = localStorage.getItem('mv');
-if(savedView && VIEWS.includes(savedView)) showView(savedView); else showView('home');
+// savedView restored at end of script
 
 // ════════════════════════════════
 //  SUPABASE
@@ -1971,6 +1971,12 @@ function lrInit() {
 }
 
 // Inicialitza quan s'obre la vista
+
+// Restore last view - runs after all functions are defined
+(function() {
+  const savedView = localStorage.getItem('mv');
+  if(savedView && VIEWS.includes(savedView)) showView(savedView); else showView('home');
+})();
 
 // ════════════════════════════════
 //  PIN LOCK
