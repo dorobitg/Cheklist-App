@@ -229,6 +229,12 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
 .ncontent code{background:var(--g4);border-radius:4px;padding:1px 5px;font-size:.84em;font-family:monospace}
 .ncontent hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 
+/* Image in notes */
+.ntbar .img-upload-lbl { display:flex;align-items:center;gap:4px;padding:5px 9px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:.81rem;color:var(--text2);font-family:inherit;transition:background .1s,color .1s; }
+.ntbar .img-upload-lbl:hover { background:var(--g3);color:var(--g1); }
+.ncontent img { max-width:100%;border-radius:var(--rs);margin:8px 0;display:block;box-shadow:0 2px 8px rgba(0,0,0,.1); }
+
+
 /* ══ FINANCES ══ */
 .finwrap{padding:26px 34px;display:flex;flex-direction:column;gap:20px;overflow-y:auto;flex:1}
 .finhdr{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:13px}
@@ -405,7 +411,7 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
 <!-- LOCK SCREEN -->
 <div class="lock gone" id="lockScr">
   <div class="lock-logo">Espai <span>iDor</span></div>
-  <div style="font-size:2.8rem">&#128274;</div>
+  <div style="color:var(--g2);margin:4px 0"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
   <div class="lock-title">Introdueix el PIN</div>
   <div class="lock-dots">
     <div class="ldot" id="d0"></div><div class="ldot" id="d1"></div>
@@ -445,17 +451,17 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="nav-sec">Aplicacions</div>
-    <div class="nitem active" id="nav-home"       onclick="sv('home')">      <span class="nicon">&#8962;</span>Inici</div>
-    <div class="nitem"        id="nav-checklists" onclick="sv('checklists')"><span class="nicon">&#9745;</span>Checklists</div>
-    <div class="nitem"        id="nav-finances"   onclick="sv('finances')">  <span class="nicon">&#128202;</span>Finances</div>
-    <div class="nitem"        id="nav-notes"      onclick="sv('notes')">     <span class="nicon">&#128221;</span>Notes</div>
-    <div class="nitem"        id="nav-leroom"     onclick="sv('leroom')">    <span class="nicon">&#127968;</span>Le Room</div>
+    <div class="nitem active" id="nav-home"       onclick="sv('home')">      <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span>Inici</div>
+    <div class="nitem"        id="nav-checklists" onclick="sv('checklists')"><span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Checklists</div>
+    <div class="nitem"        id="nav-finances"   onclick="sv('finances')">  <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>Finances</div>
+    <div class="nitem"        id="nav-notes"      onclick="sv('notes')">     <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Notes</div>
+    <div class="nitem"        id="nav-leroom"     onclick="sv('leroom')">    <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>Le Room</div>
     <div class="ndiv"></div>
     <div class="nav-sec">Accessos</div>
-    <a class="next" href="https://docs.google.com/spreadsheets" target="_blank"><span class="nicon">&#128196;</span>Google Sheets<span class="ebadge">&#8599;</span></a>
-    <a class="next" href="https://dorobitg.github.io/Calendari-Urus/" target="_blank"><span class="nicon">&#128197;</span>Calendari Urus<span class="ebadge">&#8599;</span></a>
-    <a class="next" href="https://github.com/dorobitg" target="_blank"><span class="nicon">&#128025;</span>GitHub<span class="ebadge">&#8599;</span></a>
-    <a class="next" href="https://sites.google.com/view/essenciagastronomika/inici" target="_blank"><span class="nicon">&#127859;</span>Essencia Gastronomica<span class="ebadge">&#8599;</span></a>
+    <a class="next" href="https://docs.google.com/spreadsheets" target="_blank"><span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></span>Google Sheets<span class="ebadge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a class="next" href="https://dorobitg.github.io/Calendari-Urus/" target="_blank"><span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Calendari Urus<span class="ebadge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a class="next" href="https://github.com/dorobitg" target="_blank"><span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>GitHub<span class="ebadge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a class="next" href="https://sites.google.com/view/essenciagastronomika/inici" target="_blank"><span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>Essencia Gastronomica<span class="ebadge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
     <div class="nav-bot">Espai iDor · v3.1<br>Supabase · GitHub Pages</div>
   </nav>
 
@@ -472,49 +478,49 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
           <div class="sec-title">Aplicacions</div>
           <div class="cards">
             <div class="card" onclick="sv('checklists')">
-              <div class="cicw gr">&#9745;</div>
+              <div class="cicw gr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
               <div class="ctitle">Checklists</div>
               <div class="cdesc">Llistes de tasques amb plantilles reutilitzables.</div>
               <div class="ccta">Obrir &rarr;</div>
             </div>
             <div class="card" onclick="sv('finances')">
-              <div class="cicw bl">&#128202;</div>
+              <div class="cicw bl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
               <div class="ctitle">Finances</div>
               <div class="cdesc">Analitza balancos i despeses des del CSV de Sheets.</div>
               <div class="ccta">Obrir &rarr;</div>
             </div>
             <div class="card" onclick="sv('notes')">
-              <div class="cicw gr">&#128221;</div>
+              <div class="cicw gr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
               <div class="ctitle">Notes</div>
               <div class="cdesc">Publica i gestiona notes estil blog.</div>
               <div class="ccta">Obrir &rarr;</div>
             </div>
             <div class="card" onclick="sv('leroom')">
-              <div class="cicw ca">&#127968;</div>
+              <div class="cicw ca"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
               <div class="ctitle">Le Room</div>
               <div class="cdesc">Seguiment de la inversio a Le Room Service.</div>
               <div class="ccta">Obrir &rarr;</div>
             </div>
             <div class="card" onclick="window.open('https://docs.google.com/spreadsheets','_blank')">
-              <div class="cicw sh">&#128196;</div>
+              <div class="cicw sh"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></div>
               <div class="ctitle">Google Sheets</div>
               <div class="cdesc">Accés directe als teus fulls de calcul.</div>
               <div class="ccta">Obrir &#8599;</div>
             </div>
             <div class="card" onclick="window.open('https://dorobitg.github.io/Calendari-Urus/','_blank')">
-              <div class="cicw ca">&#128197;</div>
+              <div class="cicw ca"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
               <div class="ctitle">Calendari Urus</div>
               <div class="cdesc">Activitats i esdeveniments d'Urus.</div>
               <div class="ccta">Obrir &#8599;</div>
             </div>
             <div class="card" onclick="window.open('https://github.com/dorobitg','_blank')">
-              <div class="cicw gh">&#128025;</div>
+              <div class="cicw gh"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
               <div class="ctitle">GitHub</div>
               <div class="cdesc">Repositoris i projectes de codi.</div>
               <div class="ccta">Obrir &#8599;</div>
             </div>
             <div class="card" onclick="window.open('https://sites.google.com/view/essenciagastronomika/inici','_blank')">
-              <div class="cicw gs">&#127859;</div>
+              <div class="cicw gs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
               <div class="ctitle">Essencia Gastronomica</div>
               <div class="cdesc">Web de gastronomia i receptes.</div>
               <div class="ccta">Obrir &#8599;</div>
@@ -616,12 +622,12 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
               <option value="07">Juliol</option><option value="08">Agost</option><option value="09">Setembre</option>
               <option value="10">Octubre</option><option value="11">Novembre</option><option value="12">Desembre</option>
             </select>
-            <label class="finup">&#128194; Carregar CSV<input type="file" accept=".csv,.tsv" id="csvIn" style="display:none" onchange="finLoad(this)"></label>
-            <a class="finsh" href="https://docs.google.com/spreadsheets" target="_blank">&#128196; Google Sheets &#8599;</a>
+            <label class="finup"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Carregar CSV<input type="file" accept=".csv,.tsv" id="csvIn" style="display:none" onchange="finLoad(this)"></label>
+            <a class="finsh" href="https://docs.google.com/spreadsheets" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg> Google Sheets </a>
           </div>
         </div>
         <div id="finContent">
-          <div class="finempty"><div class="finempty-ic">&#128194;</div><p>Exporta el full de Google Sheets com a <strong>CSV</strong><br>(Fitxer &rarr; Descarregar &rarr; Valors separats per comes)<br>i carrega-ho amb el boto de dalt.</p></div>
+          <div class="finempty"><div class="finempty-ic" style="color:var(--text3)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><p>Exporta el full de Google Sheets com a <strong>CSV</strong><br>(Fitxer &rarr; Descarregar &rarr; Valors separats per comes)<br>i carrega-ho amb el boto de dalt.</p></div>
         </div>
       </div>
     </div>
@@ -639,7 +645,7 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
         </div>
         <div class="nmain">
           <div class="nemst" id="nEmpty">
-            <div class="nemst-icon">&#128221;</div>
+            <div class="nemst-icon" style="color:var(--text3)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
             <p>Selecciona una nota o crea-ne una de nova amb el boto <strong>+</strong></p>
           </div>
           <div class="ned" id="nEd">
@@ -666,6 +672,8 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
               <div class="tsep"></div>
               <button class="tbtn" onclick="fmtB('blockquote')">&#10077; Cita</button>
               <button class="tbtn" onclick="fmt('removeFormat')">&#10005; Format</button>
+              <div class="tsep"></div>
+              <label class="img-upload-lbl" title="Inserir imatge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Imatge<input type="file" accept="image/*" style="display:none" onchange="nInsertImg(this)"></label>
             </div>
             <div class="ncontent" id="nContent" contenteditable="true" oninput="nSched()"></div>
           </div>
@@ -741,30 +749,30 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
             <span class="lrtag rd">&#9888; Dilucio potencial pendent</span>
           </div>
           <div class="lrverdict">
-            <div class="lrvt">&#128200; Mantenir sense ampliar</div>
+            <div class="lrvt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Mantenir sense ampliar</div>
             <p>La tesi inversora s'ha validat parcialment pero amb retard i amb riscos actius. El creixement de vendes es genuï i accelerat, el pipeline comercial es el millor de la historia, i el model demostra escalabilitat real.</p>
           </div>
           <div class="lrcard" style="margin-top:5px">
             <div class="lrctitle">Factors positius &#10003;</div>
             <div class="lrrl">
-              <div class="lrri"><span class="lrri-ic">&#128200;</span>Vendes +26,8% YoY, creixement genuï i accelerat</div>
-              <div class="lrri"><span class="lrri-ic">&#127757;</span>12 ciutats actives, escalabilitat geografica demostrada</div>
-              <div class="lrri"><span class="lrri-ic">&#128176;</span>Inversors qualificats (Castellano, Tech Transfer, Cementos Molins) reforcen posicions</div>
-              <div class="lrri"><span class="lrri-ic">&#127959;</span>2 apertures assegurades H2: Malaga + Barcelona Occidental 414</div>
-              <div class="lrri"><span class="lrri-ic">&#128203;</span>Pipeline 104 operacions, 22 en fase avancada</div>
+              <div class="lrri"><span class="lrri-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Vendes +26,8% YoY, creixement genuï i accelerat</div>
+              <div class="lrri"><span class="lrri-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>12 ciutats actives, escalabilitat geografica demostrada</div>
+              <div class="lrri"><span class="lrri-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>Inversors qualificats (Castellano, Tech Transfer, Cementos Molins) reforcen posicions</div>
+              <div class="lrri"><span class="lrri-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>2 apertures assegurades H2: Malaga + Barcelona Occidental 414</div>
+              <div class="lrri"><span class="lrri-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>Pipeline 104 operacions, 22 en fase avancada</div>
             </div>
           </div>
           <div class="lrcard" style="margin-top:5px">
             <div class="lrctitle">Riscos a vigilar &#9888;</div>
             <div class="lrrl">
-              <div class="lrri"><span class="lrri-ic">&#128308;</span>EBITDA acumulat H1: -28.900&euro;, encara crema caixa</div>
-              <div class="lrri"><span class="lrri-ic">&#128308;</span>Personal +17% QoQ, costos creixen massa rapid</div>
-              <div class="lrri"><span class="lrri-ic">&#128308;</span>Objectiu 2026: 22,4M&euro;. Ritme actual: ~4M&euro; anualitzats</div>
-              <div class="lrri"><span class="lrri-ic">&#128308;</span>Nova ampliacio en curs, risc de dilucio addicional</div>
+              <div class="lrri"><span class="lrri-ic" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>EBITDA acumulat H1: -28.900&euro;, encara crema caixa</div>
+              <div class="lrri"><span class="lrri-ic" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>Personal +17% QoQ, costos creixen massa rapid</div>
+              <div class="lrri"><span class="lrri-ic" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>Objectiu 2026: 22,4M&euro;. Ritme actual: ~4M&euro; anualitzats</div>
+              <div class="lrri"><span class="lrri-ic" style="color:var(--red)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>Nova ampliacio en curs, risc de dilucio addicional</div>
             </div>
           </div>
           <div class="lrverdict" style="margin-top:5px;border-left-color:#b45309;background:#fffbeb">
-            <div class="lrvt" style="color:#92400e">&#128247; Punt d'inflexio a vigilar: Q3 2026</div>
+            <div class="lrvt" style="color:#92400e"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Punt d'inflexio a vigilar: Q3 2026</div>
             <p>Si el segon semestre confirma el milio trimestral com a nova base, amb EBITDA positiu sostingut i les dues apertures operatives, la valoracio actual de 7,3M&euro; podria quedar curta i la plusvalua latent augmentaria significativament.</p>
           </div>
         </div>
@@ -795,11 +803,11 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
 <!-- BOTTOM NAV -->
 <nav class="bnav">
   <div class="bnavin">
-    <button class="bni active" id="bnav-home"       onclick="sv('home')">      <span class="bico">&#8962;</span>Inici</button>
-    <button class="bni"        id="bnav-checklists" onclick="sv('checklists')"><span class="bico">&#9745;</span>Llistes</button>
-    <button class="bni"        id="bnav-finances"   onclick="sv('finances')">  <span class="bico">&#128202;</span>Finances</button>
-    <button class="bni"        id="bnav-notes"      onclick="sv('notes')">     <span class="bico">&#128221;</span>Notes</button>
-    <button class="bni"        id="bnav-leroom"     onclick="sv('leroom')">    <span class="bico">&#127968;</span>Le Room</button>
+    <button class="bni active" id="bnav-home"       onclick="sv('home')"><span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span>Inici</button>
+    <button class="bni"        id="bnav-checklists" onclick="sv('checklists')"><span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Llistes</button>
+    <button class="bni"        id="bnav-finances"   onclick="sv('finances')">  <span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>Finances</button>
+    <button class="bni"        id="bnav-notes"      onclick="sv('notes')">     <span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Notes</button>
+    <button class="bni"        id="bnav-leroom"     onclick="sv('leroom')">    <span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>Le Room</button>
   </div>
 </nav>
 
@@ -1175,6 +1183,21 @@ function nCopy(){
     var btn=document.querySelector('.nacts .btn.acc'); if(btn){ btn.textContent='Copiat!'; setTimeout(function(){ btn.textContent='Copiar'; },1500); }
   });
 }
+
+function nInsertImg(inp){
+  var file=inp.files[0]; if(!file) return;
+  // Check size (max 2MB)
+  if(file.size>2*1024*1024){ alert('La imatge no pot superar 2MB.'); inp.value=''; return; }
+  var reader=new FileReader();
+  reader.onload=function(e){
+    gid('nContent').focus();
+    document.execCommand('insertHTML',false,'<img src="'+e.target.result+'" alt="'+esc(file.name)+'">');
+    nSched();
+    inp.value='';
+  };
+  reader.readAsDataURL(file);
+}
+
 function fmt(cmd){ gid('nContent').focus(); document.execCommand(cmd,false,null); nSched(); }
 function fmtB(tag){ gid('nContent').focus(); document.execCommand('formatBlock',false,tag); nSched(); }
 
@@ -1200,9 +1223,9 @@ function lrInit(){
 //  RSS
 // ══════════════════════════════════════════
 var RSS=[
-  {name:'El Punt Avui', url:'http://www.elpuntavui.cat/barcelona/nacional.feed?type=rss', cls:'mag', icon:'&#128240;'},
-  {name:'Barca Blaugranes', url:'https://www.barcablaugranes.com/rss/current', cls:'barca', icon:'&#9917;'},
-  {name:'Sismes Catalunya', url:'https://sismocat.icgc.cat/sisweb2/sisweb_api_rss_external.php?consulta=2init&lang=es', cls:'sismo', icon:'&#127757;'}
+  {name:'El Punt Avui', url:'http://www.elpuntavui.cat/barcelona/nacional.feed?type=rss', cls:'mag', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>'},
+  {name:'Barca Blaugranes', url:'https://www.barcablaugranes.com/rss/current', cls:'barca', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 8l2 4-2 4-4-2v-4z"/></svg>'},
+  {name:'Sismes Catalunya', url:'https://sismocat.icgc.cat/sisweb2/sisweb_api_rss_external.php?consulta=2init&lang=es', cls:'sismo', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'}
 ];
 var PROXIES=[
   function(u){ return 'https://corsproxy.io/?'+encodeURIComponent(u); },
@@ -1262,30 +1285,118 @@ var finData=[];
 var MN=['','Gen','Feb','Mar','Abr','Mai','Jun','Jul','Ago','Set','Oct','Nov','Des'];
 function finLoad(inp){ var f=inp.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(e){ finParse(e.target.result); }; r.readAsText(f,'UTF-8'); }
 function finParse(txt){
-  var lines=txt.trim().split('\n'); if(lines.length<2) return;
-  var d=lines[0].indexOf(';')>=0?';':',';
-  var hdr=lines[0].split(d).map(function(h){ return h.trim().replace(/^"|"$/g,'').toUpperCase(); });
-  function fc(names){ for(var i=0;i<names.length;i++){ var k=hdr.findIndex(function(h){ return h.indexOf(names[i])>=0; }); if(k>=0) return k; } return -1; }
-  var fi={ date:fc(["DATA D'OPERACIO","DATA OPERACIO","DATE","DATA"]), amount:fc(["IMPORT","IMPORTE","AMOUNT"]), month:fc(["MES"]), year:fc(["ANY","ANO","YEAR"]), cat:fc(["CATEGORIA","CATEGORY"]), type:fc(["INGRES / DESPESA","INGRES/DESPESA","TYPE","TIPUS"]) };
-  finData=[];
-  for(var i=1;i<lines.length;i++){
-    var cols=finSplit(lines[i],d); if(cols.length<3) continue;
-    var av=(cols[fi.amount]||'').replace(/[^0-9.,-]/g,'').replace(',','.');
-    var amount=parseFloat(av)||0;
-    var dr=(cols[fi.date]||'').trim().replace(/^"|"$/g,'');
-    var pts=dr.split('/');
-    var mm=pts[1]?pts[1].padStart(2,'0'):(cols[fi.month]||'').trim().padStart(2,'0');
-    var yy=pts[2]?pts[2].slice(-4):(cols[fi.year]||'').trim();
-    var cat=(cols[fi.cat]||'').trim().replace(/^"|"$/g,'').toUpperCase();
-    var type=(cols[fi.type]||'').trim().replace(/^"|"$/g,'').toLowerCase();
-    if(!yy||!mm) continue;
-    finData.push({month:mm,year:yy,amount:amount,cat:cat,type:type});
+  // Suporta separadors ; o , i salts de linia \r\n o \n
+  var raw=txt.trim().replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  var lines=raw.split('\n');
+
+  // Saltar files buides o de titol (fila 1 pot ser el titol "CONTROL DE MOVIMENTS")
+  // Buscar la fila de capcalera (que contingui DATA o CONCEPTE)
+  var hdrIdx=-1;
+  for(var h=0;h<Math.min(5,lines.length);h++){
+    var up=lines[h].toUpperCase();
+    if(up.indexOf('DATA')>=0 && (up.indexOf('IMPORT')>=0 || up.indexOf('CATEGORIA')>=0)){
+      hdrIdx=h; break;
+    }
   }
+  if(hdrIdx<0){ alert('No s\'he pogut trobar la capçalera del CSV. Revisa el format.'); return; }
+
+  var d=lines[hdrIdx].indexOf(';')>=0?';':',';
+  var hdr=lines[hdrIdx].split(d).map(function(h){ return h.trim().replace(/^"|"$/g,'').toUpperCase(); });
+
+  // Mapa de columnes flexible
+  function fc(names){
+    for(var i=0;i<names.length;i++){
+      var k=hdr.findIndex(function(h){ return h.indexOf(names[i])>=0; });
+      if(k>=0) return k;
+    }
+    return -1;
+  }
+
+  // Columnes exactes de l'estructura nova:
+  // DATA D'OPERACIÓ | CONCEPTE | DATA VALOR | IMPORT | SALDO | MES | MES TEXT | Any | CATEGORIA | Ingrés / despesa
+  var fi={
+    date:   fc(["DATA D'OPERACI","DATA OPERACI","DATA D'OPERACI"]),
+    concept:fc(["CONCEPTE","CONCEPT","DESCRIPCI"]),
+    amount: fc(["IMPORT","IMPORTE","AMOUNT"]),
+    saldo:  fc(["SALDO","BALANCE"]),
+    month:  fc(["MES TEXT","MES"]),  // prioritzem MES TEXT (GENER, FEBRER...) pero si no, MES numeric
+    monthN: fc(["MES"]),             // MES numeric (01,02...)
+    year:   fc(["ANY","A\xD1O","YEAR","AÑO"]),
+    cat:    fc(["CATEGORIA","CATEGORY"]),
+    type:   fc(["INGR","DESP","TYPE","TIPUS"])  // "Ingrés / despesa" conte INGR
+  };
+
+  // Mes text -> numero
+  var MESMAP={
+    'GENER':'01','FEBRER':'02','MARC':'03','ABRIL':'04','MAIG':'05','JUNY':'06',
+    'JULIOL':'07','AGOST':'08','SETEMBRE':'09','OCTUBRE':'10','NOVEMBRE':'11','DESEMBRE':'12',
+    'ENERO':'01','FEBRERO':'02','MARZO':'03','ABRIL':'04','MAYO':'05','JUNIO':'06',
+    'JULIO':'07','AGOSTO':'08','SEPTIEMBRE':'09','OCTUBRE':'10','NOVIEMBRE':'11','DICIEMBRE':'12',
+    'JAN':'01','FEB':'02','MAR':'03','APR':'04','MAY':'05','JUN':'06',
+    'JUL':'07','AUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'
+  };
+
+  finData=[];
+  for(var i=hdrIdx+1;i<lines.length;i++){
+    var cols=finSplit(lines[i],d);
+    if(cols.length<4) continue;
+
+    // Import: pot tenir € , . i signes negatius
+    var av=(cols[fi.amount]||'').trim().replace(/^"|"$/g,'');
+    // Eliminar símbols de moneda i espais, normalitzar decimal
+    av=av.replace(/[€€\s]/g,'').replace(/\./g,'').replace(',','.');
+    var amount=parseFloat(av)||0;
+
+    // Data: format DD/MM/YYYY
+    var dr=(fi.date>=0 && cols[fi.date] ? cols[fi.date] : '').toString().trim().replace(/^"|"$/g,'');
+    var pts=dr.split('/');
+    var dd=pts[0]||'', mm='', yy='';
+
+    // Mes: primer MES (numeric: 01,02...), despres MES TEXT (GENER, FEBRER...)
+    if(fi.monthN>=0 && cols[fi.monthN]){
+      var mn=(cols[fi.monthN]||'').trim().replace(/^"|"$/g,'');
+      var mnU=mn.toUpperCase().trim();
+      if(/^\d+$/.test(mn)){ mm=mn.padStart(2,'0'); }
+      else if(MESMAP[mnU]){ mm=MESMAP[mnU]; }
+    }
+    if(!mm && fi.month>=0 && cols[fi.month]){
+      var mt=(cols[fi.month]||'').trim().replace(/^"|"$/g,'').toUpperCase();
+      if(MESMAP[mt]) mm=MESMAP[mt];
+    }
+    if(!mm && pts[1]) mm=pts[1].padStart(2,'0');
+
+    // Any
+    if(fi.year>=0 && cols[fi.year]){
+      yy=(cols[fi.year]||'').trim().replace(/^"|"$/g,'');
+    }
+    if(!yy && pts[2]) yy=pts[2].slice(-4);
+
+    // Categoria
+    var cat='';
+    if(fi.cat>=0 && cols[fi.cat]) cat=(cols[fi.cat]||'').trim().replace(/^"|"$/g,'').toUpperCase();
+
+    // Tipus: la columna "Ingrés / despesa" conte "ingres" o "despesa"
+    var type='';
+    if(fi.type>=0 && cols[fi.type]) type=(cols[fi.type]||'').trim().replace(/^"|"$/g,'').toLowerCase();
+    // Si no hi ha columna tipus, deduïm per l'import
+    if(!type){ type = amount<0 ? 'despesa' : 'ingres'; }
+
+    // Concepte (per info futura)
+    var concept='';
+    if(fi.concept>=0 && cols[fi.concept]) concept=(cols[fi.concept]||'').trim().replace(/^"|"$/g,'');
+
+    if(!yy||!mm) continue;
+    finData.push({month:mm,year:yy,amount:Math.abs(amount),cat:cat,type:type,concept:concept});
+  }
+
+  if(!finData.length){ alert('No s\'han trobat dades. Revisa que el CSV tingui files de dades.'); return; }
+
   var years=[]; finData.forEach(function(r){ if(years.indexOf(r.year)<0) years.push(r.year); }); years.sort();
   var sel=gid('fYear'); sel.innerHTML='<option value="">Tots els anys</option>';
   years.forEach(function(y){ sel.innerHTML+='<option value="'+y+'">'+y+'</option>'; });
   if(years.length) sel.value=years[years.length-1];
   finFilter();
+  console.log('CSV carregat: '+finData.length+' registres, '+years.length+' anys, columnes detectades:',fi);
 }
 function finSplit(line,d){ var cols=[],cur='',inQ=false,i=0; for(;i<line.length;i++){ var c=line[i]; if(c==='"') inQ=!inQ; else if(c===d&&!inQ){ cols.push(cur.trim()); cur=''; } else cur+=c; } cols.push(cur.trim()); return cols; }
 function finFilter(){
