@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Espai iDor</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<meta name="theme-color" content="#3D4127">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Espai iDor">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYmcyIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI2MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNGE1NTMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzFhMWUwZSIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZDRiODZhIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2YwZDA4MCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUuNSIgZmlsbD0idXJsKCNiZzIpIiBzdHJva2U9IiNCQUMwOTUiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPHBhdGggZD0iTSA1IDIyIFEgNSA2IDE2IDQgUSAyNyA2IDI3IDIyIiBmaWxsPSJub25lIiBzdHJva2U9IiNCQUMwOTUiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC42Ii8+CiAgPHRleHQgeD0iMTYiIHk9IjIxIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zdHlsZT0iaXRhbGljIiBmaWxsPSJ1cmwoI2cyKSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+aUQ8L3RleHQ+Cjwvc3ZnPg==">
+<link rel="apple-touch-icon" href="logo.svg">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 :root {
@@ -190,6 +197,18 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
 .nsbp{width:27px;height:27px;border-radius:8px;border:none;cursor:pointer;background:var(--g1);color:#fff;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background .1s}
 .nsbp:hover{background:#4f5535}
 .nsrch{padding:8px 10px;border-bottom:1px solid var(--border)}
+.nsrch-wrap{display:flex;gap:5px;align-items:center}
+.nsrch-wrap input{flex:1;padding:7px 11px;border:1px solid var(--border);border-radius:20px;font-size:.81rem;outline:none;background:var(--bg);font-family:inherit;color:var(--text)}
+.nsrch-wrap input:focus{border-color:var(--g1)}
+.nsrch-ai{width:30px;height:30px;border-radius:50%;border:none;background:var(--g1);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .1s}
+.nsrch-ai:hover{background:#4f5535}
+.nsrch-ai-result{padding:9px 12px;background:var(--g4);border-bottom:1px solid var(--border);font-size:.77rem;color:var(--text2);line-height:1.5}
+.nsrch-ai-result.hid{display:none}
+.nsrch-ai-result strong{color:var(--g1);font-weight:700}
+.nsrch-ai-result .ai-badge{display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:700;color:var(--g1);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.nsrch-ai-result .ai-badge svg{opacity:.7}
+.nsrch-spinning{animation:spin .8s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .nsrch input{width:100%;padding:7px 11px;border:1px solid var(--border);border-radius:20px;font-size:.81rem;outline:none;background:var(--bg);font-family:inherit;color:var(--text)}
 .nsrch input:focus{border-color:var(--g1)}
 .nlist{flex:1;overflow-y:auto;padding:5px 7px}
@@ -327,6 +346,65 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
 .lrri{display:flex;gap:8px;align-items:flex-start;font-size:.81rem;color:var(--text2);line-height:1.4}
 .lrri-ic{flex-shrink:0;font-size:.84rem;margin-top:1px}
 
+
+/* ══ CELLER ══ */
+.cl-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;background:#0a0a0f;color:#fff}
+.cl-hdr{border-bottom:0.5px solid #1a1a2e;padding:20px 24px 0;flex-shrink:0}
+.cl-hdr-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.cl-eyebrow{color:#555;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:3px}
+.cl-h1{font-size:24px;font-weight:400;letter-spacing:-0.5px;color:#fff}
+.cl-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.cl-stat{background:#111;border-radius:9px;padding:12px 14px;border:0.5px solid #1a1a2e}
+.cl-stat-val{font-size:20px;font-weight:400;margin-top:3px;color:#fff}
+.cl-nav{display:flex;gap:0}
+.cl-ntab{padding:9px 18px;background:none;border:none;border-bottom:2px solid transparent;color:#555;font-size:13px;cursor:pointer;letter-spacing:.5px;font-family:inherit}
+.cl-ntab.active{color:#fff;border-bottom-color:#8B1A1A}
+.cl-body{flex:1;overflow-y:auto;padding:0 24px}
+.cl-filters{display:flex;gap:8px;margin:20px 0 16px;flex-wrap:wrap;align-items:center}
+.cl-search{flex:1;min-width:140px;background:#111;border:0.5px solid #1a1a2e;border-radius:8px;padding:9px 12px;color:#fff;font-size:13px;outline:none;font-family:inherit}
+.cl-search:focus{border-color:#333}
+.cl-chips{display:flex;gap:5px;flex-wrap:wrap}
+.cl-chip{padding:7px 12px;background:#111;border:0.5px solid #1a1a2e;border-radius:20px;color:#555;font-size:11px;cursor:pointer;text-transform:capitalize;transition:.15s;font-family:inherit}
+.cl-chip.active{color:#fff}
+.cl-list{display:grid;gap:8px;padding-bottom:20px}
+.cl-card{background:#0d0d14;border:0.5px solid #1a1a2e;border-left-width:3px;border-radius:9px;padding:14px 18px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;transition:opacity .2s}
+.cl-card.drank{opacity:.4}
+.cl-tbadge{font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;display:inline-block;margin-bottom:4px}
+.cl-wname{font-size:14px;font-weight:400;margin-bottom:3px;color:#fff}
+.cl-wmeta{font-size:11px;color:#555}
+.cl-wprice{font-size:13px;color:#777;text-align:right;margin-bottom:5px}
+.cl-stars{display:flex;gap:2px}
+.cl-star{cursor:pointer;font-size:15px}
+/* Modals */
+.cl-over{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.cl-modal{background:#0d0d14;border:0.5px solid #2a2a3a;border-radius:14px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.cl-mhdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+.cl-mclose{background:none;border:none;color:#555;font-size:20px;cursor:pointer;padding:3px;line-height:1;font-family:inherit}
+.cl-field{margin-bottom:14px}
+.cl-field label{display:block;color:#555;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.cl-field input,.cl-field textarea,.cl-field select{background:#111;border:0.5px solid #1a1a2e;border-radius:7px;padding:9px 11px;color:#fff;font-size:13px;width:100%;outline:none;font-family:inherit}
+.cl-field input:focus,.cl-field textarea:focus{border-color:#333}
+.cl-tbtns{display:flex;gap:7px}
+.cl-tbtn{flex:1;padding:7px 4px;background:#111;border:0.5px solid #2a2a3a;border-radius:7px;color:#555;font-size:11px;cursor:pointer;font-family:inherit;transition:.1s}
+.cl-macts{display:flex;gap:9px;margin-top:20px}
+.cl-btn-drank{flex:1;padding:11px 14px;background:#1a1a2e;border:0.5px solid #2a2a4a;border-radius:9px;color:#8888cc;font-size:12px;cursor:pointer;font-family:inherit}
+.cl-btn-save{flex:1;padding:11px 14px;border:none;border-radius:9px;color:#fff;font-size:12px;cursor:pointer;font-weight:500;font-family:inherit}
+.cl-btn-del{background:#1a0a0a;border:0.5px solid #3a1a1a;border-radius:7px;color:#8B1A1A;padding:9px 18px;font-size:11px;cursor:pointer;letter-spacing:1px;margin-top:10px;width:100%;font-family:inherit}
+.cl-btn-add{background:#8B1A1A;border:none;border-radius:9px;color:#fff;padding:9px 16px;font-size:12px;cursor:pointer;letter-spacing:.5px;font-family:inherit;white-space:nowrap}
+/* Map */
+#clmap{width:100%;height:420px;border-radius:12px;overflow:hidden;border:0.5px solid #1a1a2e;margin:16px 0 8px}
+.cl-mleg{display:flex;gap:14px;flex-wrap:wrap;padding-bottom:20px}
+.cl-mleg-i{display:flex;align-items:center;gap:5px;font-size:11px;color:#555}
+.cl-mleg-d{width:7px;height:7px;border-radius:50%}
+.cl-sync{font-size:.68rem;color:#555;padding:6px 0;display:flex;align-items:center;gap:5px}
+/* Mobile celler */
+@media(max-width:768px){
+  .cl-stats{grid-template-columns:repeat(2,1fr)}
+  .cl-hdr-top{flex-direction:column;align-items:flex-start}
+  .cl-hdr{padding:14px 14px 0}
+  .cl-body{padding:0 14px}
+}
+
 /* ══ MODAL ══ */
 .mover{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
 .mover.hid{display:none}
@@ -346,50 +424,113 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
 .bnext{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:none;font-size:.57rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);text-decoration:none}
 
 /* ══ RESPONSIVE ══ */
+/* ── MOBILE RESPONSIVE (portrait + landscape) ── */
 @media(max-width:768px){
+  :root{--hh:48px}
   .hamburger{display:block}
   .sidebar{display:none}
   .content{margin-left:0}
   .bnav{display:block}
-  .layout{margin-bottom:60px}
-  .hero-wrap{height:160px}
-  .hero-date{font-size:1.05rem}
-  .home-wrap{padding:18px 15px;gap:20px}
-  .cards{grid-template-columns:1fr 1fr;gap:10px}
-  .card{padding:13px}
+  .layout{margin-bottom:60px;margin-top:var(--hh)}
+
+  /* Hero */
+  .hero-wrap{height:140px;border-radius:0 0 14px 14px}
+  .hero-date{font-size:.95rem}
+
+  /* Home */
+  .home-wrap{padding:14px 12px;gap:16px}
+  .sec-title{font-size:.65rem}
+  .cards{grid-template-columns:1fr 1fr;gap:9px}
+  .card{padding:12px;gap:6px}
+  .cicw{width:34px;height:34px;font-size:1.1rem;border-radius:8px}
+  .ctitle{font-size:.82rem}
   .cdesc{display:none}
-  .clapp{grid-template-columns:1fr}
-  .clsb{position:fixed;left:0;top:var(--hh);bottom:60px;width:82vw;max-width:300px;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:45;display:flex}
+  .ccta{font-size:.7rem}
+
+  /* Checklists */
+  .clapp{grid-template-columns:1fr;height:calc(100vh - var(--hh) - 60px);overflow:hidden}
+  .clsb{position:fixed;left:0;top:var(--hh);bottom:60px;width:85vw;max-width:320px;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:45;display:flex;box-shadow:4px 0 20px rgba(0,0,0,.15)}
   .clsb.open{transform:translateX(0)}
-  .clmain{padding:15px}
-  .clni{font-size:1.12rem;width:100%}
-  .addform{flex-direction:column}
-  .addform input,.addform .note-inp{width:100% !important}
+  .clmain{padding:12px;height:100%;overflow-y:auto}
+  .clni{font-size:1rem;width:100%}
+  .addform{flex-direction:column;gap:6px}
+  .addform input[type=text],.addform .note-inp{width:100% !important;min-width:unset}
+  .acts{gap:5px}
+  .btn{padding:6px 10px;font-size:.74rem}
   .inote,.tinote{display:none}
-  .nlay{grid-template-columns:1fr}
+  .irow,.trow{padding:8px 9px}
+  .itxt,.titxt{font-size:.84rem}
+
+  /* Notes */
+  .nlay{grid-template-columns:1fr;height:calc(100vh - var(--hh) - 60px);overflow:hidden}
   .nsb{display:none}
-  .ned .nedtop{padding:12px 15px 0}
-  .ntbar{padding:6px 10px}
-  .ncontent{padding:14px}
-  .finwrap{padding:15px;gap:15px}
-  .finhdr{flex-direction:column}
-  .finctrl{flex-direction:column;width:100%}
-  .finsel,.finup,.finsh{width:100%;justify-content:center}
-  .kgrid{grid-template-columns:1fr 1fr;gap:9px}
-  .kcard{padding:11px 13px}
-  .kval{font-size:1.1rem}
+  .nmain{height:100%;overflow:hidden}
+  .ned{height:100%}
+  .nedtop{padding:10px 13px 0;flex-wrap:wrap;gap:8px}
+  .ntitle{font-size:1.1rem}
+  .nacts{gap:4px;flex-wrap:wrap}
+  .ntbar{padding:5px 8px;gap:1px;overflow-x:auto;flex-wrap:nowrap}
+  .tbtn{padding:4px 7px;font-size:.75rem;white-space:nowrap;flex-shrink:0}
+  .tsep{flex-shrink:0}
+  .ncontent{padding:12px}
+
+  /* Finances */
+  .finwrap{padding:13px;gap:13px}
+  .finhdr{flex-direction:column;gap:10px}
+  .fintitle{font-size:1.1rem}
+  .finctrl{flex-direction:column;width:100%;gap:7px}
+  .finsel,.finup,.finsh{width:100%;justify-content:center;text-align:center}
+  .kgrid{grid-template-columns:1fr 1fr;gap:8px}
+  .kcard{padding:10px 11px}
+  .klbl{font-size:.57rem}
+  .kval{font-size:1rem}
   .catbw{display:none}
-  .lrwrap{padding:15px;gap:18px}
-  .lrhero{padding:18px}
-  .lrhero-t{font-size:1.2rem}
+  .catam{min-width:60px;font-size:.78rem}
+  .catn{font-size:.78rem}
+  .bch{gap:4px;height:100px}
+  .bb{width:10px}
+
+  /* Le Room */
+  .lrwrap{padding:13px;gap:16px}
+  .lrhero{padding:16px 18px}
+  .lrhero-t{font-size:1.1rem}
+  .lrhero-kpis{gap:14px}
+  .lrhkv{font-size:1.1rem}
   .lrtcol{grid-template-columns:1fr}
   .lrinv{grid-template-columns:1fr}
-  .lrgrid{grid-template-columns:1fr 1fr}
+  .lrgrid{grid-template-columns:1fr 1fr;gap:8px}
+  .lrk{padding:12px 14px}
+  .lrkv{font-size:1rem}
+
+  /* Header */
+  header{padding:0 12px;gap:8px}
+  .hlogo{font-size:.95rem}
+  #hdate{display:none}
 }
-@media(max-width:400px){
+
+/* Landscape mobile */
+@media(max-width:768px) and (orientation:landscape){
+  .hero-wrap{height:90px}
+  .bnav{height:50px}
+  .layout{margin-bottom:50px}
+  .clapp,.nlay{height:calc(100vh - var(--hh) - 50px)}
+  .clsb{bottom:50px}
+  .home-wrap{padding:10px 12px;gap:12px}
+}
+
+/* Small phones */
+@media(max-width:380px){
+  .cards{grid-template-columns:1fr 1fr;gap:7px}
+  .card{padding:10px}
+  .kgrid{grid-template-columns:1fr 1fr}
+  .lrgrid{grid-template-columns:1fr}
+  .btn{padding:5px 8px;font-size:.7rem}
+}
+
+/* Very small */
+@media(max-width:320px){
   .cards{grid-template-columns:1fr}
   .kgrid{grid-template-columns:1fr}
-  .lrgrid{grid-template-columns:1fr}
 }
 
 /* PRINT */
@@ -456,6 +597,7 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
     <div class="nitem"        id="nav-finances"   onclick="sv('finances')">  <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>Finances</div>
     <div class="nitem"        id="nav-notes"      onclick="sv('notes')">     <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Notes</div>
     <div class="nitem"        id="nav-leroom"     onclick="sv('leroom')">    <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>Le Room</div>
+    <div class="nitem"        id="nav-celler"     onclick="sv('celler')">    <span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8M7 10h10M12 15v7M17 2H7l-2 8a5 5 0 0 0 10 0l-2-8z"/></svg></span>Celler</div>
     <div class="ndiv"></div>
     <div class="nav-sec">Accessos</div>
     <a class="next" href="https://docs.google.com/spreadsheets" target="_blank"><span class="nicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></span>Google Sheets<span class="ebadge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
@@ -493,6 +635,12 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
               <div class="cicw gr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
               <div class="ctitle">Notes</div>
               <div class="cdesc">Publica i gestiona notes estil blog.</div>
+              <div class="ccta">Obrir &rarr;</div>
+            </div>
+            <div class="card" onclick="sv('celler')">
+              <div class="cicw" style="background:#f5eef8"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8M7 10h10M12 15v7M17 2H7l-2 8a5 5 0 0 0 10 0l-2-8z"/></svg></div>
+              <div class="ctitle">Celler</div>
+              <div class="cdesc">Gestio de la bodega i la winelist.</div>
               <div class="ccta">Obrir &rarr;</div>
             </div>
             <div class="card" onclick="sv('leroom')">
@@ -640,7 +788,15 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
             <span class="nsbht">Notes</span>
             <button class="nsbp" onclick="nNew()" title="Nova nota">+</button>
           </div>
-          <div class="nsrch"><input type="text" id="nSrch" placeholder="Cercar notes..." oninput="nFilter(this.value)"></div>
+          <div class="nsrch">
+            <div class="nsrch-wrap">
+              <input type="text" id="nSrch" placeholder="Cerca intel·ligent..." oninput="nFilter(this.value)" onkeydown="if(event.key==='Enter') nAiSearch()">
+              <button class="nsrch-ai" onclick="nAiSearch()" title="Cerca amb IA">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+            </div>
+            <div class="nsrch-ai-result hid" id="nAiResult"></div>
+          </div>
           <div class="nlist" id="nList"><div class="nempty-list">Carregant...</div></div>
         </div>
         <div class="nmain">
@@ -779,6 +935,92 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
       </div>
     </div>
 
+
+
+    <!-- CELLER -->
+    <div class="view" id="view-celler">
+      <div class="cl-wrap">
+        <div class="cl-hdr">
+          <div class="cl-hdr-top">
+            <div>
+              <p class="cl-eyebrow">Col·leccio privada</p>
+              <h1 class="cl-h1">El Celler</h1>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="cl-sync" id="clSync"></span>
+              <button class="cl-btn-add" onclick="clrOpenAdd()">+ Afegir ampolla</button>
+            </div>
+          </div>
+          <div class="cl-stats">
+            <div class="cl-stat"><p class="cl-eyebrow">Ampolles</p><p class="cl-stat-val" id="cs-total">0</p></div>
+            <div class="cl-stat"><p class="cl-eyebrow">Begudes</p><p class="cl-stat-val" id="cs-drank">0</p></div>
+            <div class="cl-stat"><p class="cl-eyebrow">Valor celler</p><p class="cl-stat-val" id="cs-value">0€</p></div>
+            <div class="cl-stat"><p class="cl-eyebrow">Valoracio mitja</p><p class="cl-stat-val" id="cs-rating">-</p></div>
+          </div>
+          <div class="cl-nav">
+            <button class="cl-ntab active" id="clrtab-cellar" onclick="clrTab('cellar')">Celler</button>
+            <button class="cl-ntab" id="clrtab-map" onclick="clrTab('map')">Mapa</button>
+          </div>
+        </div>
+        <div class="cl-body">
+          <div id="clr-view-cellar">
+            <div class="cl-filters">
+              <input class="cl-search" id="clrSearch" placeholder="Cercar vins..." oninput="clrRender()">
+              <div class="cl-chips" id="clrChips"></div>
+            </div>
+            <div class="cl-list" id="clrList"></div>
+          </div>
+          <div id="clr-view-map" style="display:none">
+            <div id="clmap"></div>
+            <div class="cl-mleg" id="clrMapLeg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CELLER MODAL DETAIL -->
+    <div class="cl-over" id="clr-modal-detail" style="display:none" onclick="if(event.target===this)clrCloseDetail()">
+      <div class="cl-modal">
+        <div class="cl-mhdr">
+          <div><p class="cl-eyebrow">Detall del vi</p><h2 id="clr-dtitle" style="font-size:17px;font-weight:400;line-height:1.3;margin-top:3px;color:#fff"></h2></div>
+          <button class="cl-mclose" onclick="clrCloseDetail()">×</button>
+        </div>
+        <div class="cl-field"><label>Nom</label><input id="clr-dname"/></div>
+        <div class="cl-field"><label>Varietat</label><input id="clr-dgrape"/></div>
+        <div class="cl-field"><label>Regio</label><input id="clr-dregion"/></div>
+        <div class="cl-field"><label>Pais</label><input id="clr-dcountry"/></div>
+        <div class="cl-field"><label>Anyada</label><input id="clr-dyear" type="number"/></div>
+        <div class="cl-field"><label>Preu (€)</label><input id="clr-dprice" type="number" step="0.01"/></div>
+        <div class="cl-field"><label>Tipus</label><div class="cl-tbtns" id="clr-dtypeb"></div></div>
+        <div class="cl-field"><label>Notes de tast</label><textarea id="clr-dnotes" rows="3"></textarea></div>
+        <div class="cl-field"><label>Valoracio</label><div class="cl-stars" id="clr-dstars"></div></div>
+        <div class="cl-macts">
+          <button class="cl-btn-drank" id="clr-ddrankb" onclick="clrToggleDrank()"></button>
+          <button class="cl-btn-save" id="clr-dsaveb" onclick="clrSaveDetail()">Desar</button>
+        </div>
+        <button class="cl-btn-del" onclick="clrDeleteWine()">Eliminar vi</button>
+      </div>
+    </div>
+
+    <!-- CELLER MODAL ADD -->
+    <div class="cl-over" id="clr-modal-add" style="display:none" onclick="if(event.target===this)clrCloseAdd()">
+      <div class="cl-modal">
+        <div class="cl-mhdr">
+          <div><p class="cl-eyebrow">Nova ampolla</p><h2 style="font-size:17px;font-weight:400;margin-top:3px;color:#fff">Afegir al celler</h2></div>
+          <button class="cl-mclose" onclick="clrCloseAdd()">×</button>
+        </div>
+        <div class="cl-field"><label>Nom *</label><input id="clr-aname"/></div>
+        <div class="cl-field"><label>Varietat</label><input id="clr-agrape"/></div>
+        <div class="cl-field"><label>Regio</label><input id="clr-aregion"/></div>
+        <div class="cl-field"><label>Pais</label><input id="clr-acountry"/></div>
+        <div class="cl-field"><label>Anyada</label><input id="clr-ayear" type="number"/></div>
+        <div class="cl-field"><label>Preu (€)</label><input id="clr-aprice" type="number" step="0.01"/></div>
+        <div class="cl-field"><label>Tipus</label><div class="cl-tbtns" id="clr-atypeb"></div></div>
+        <div class="cl-field"><label>Notes</label><textarea id="clr-anotes" rows="2"></textarea></div>
+        <button class="cl-btn-save" id="clr-asaveb" style="width:100%;padding:12px;margin-top:6px" onclick="clrAddWine()">Afegir al celler</button>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /layout -->
 
@@ -808,10 +1050,11 @@ header{height:var(--hh);background:rgba(61,65,39,.93);backdrop-filter:blur(20px)
     <button class="bni"        id="bnav-finances"   onclick="sv('finances')">  <span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>Finances</button>
     <button class="bni"        id="bnav-notes"      onclick="sv('notes')">     <span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Notes</button>
     <button class="bni"        id="bnav-leroom"     onclick="sv('leroom')">    <span class="bico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>Le Room</button>
+    <button class="bni"        id="bnav-celler"     onclick="sv('celler')">    <span class="bico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8M7 10h10M12 15v7M17 2H7l-2 8a5 5 0 0 0 10 0l-2-8z"/></svg></span>Celler</button>
   </div>
 </nav>
 
-<script>
+<script charset="utf-8">
 // ══════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════
@@ -865,6 +1108,7 @@ function sv(id){
   if(id==='checklists' && !clData.lists.length && !clData.tpls.length) clLoad();
   if(id==='notes'      && !nAllData.length) nLoad();
   if(id==='leroom') lrInit();
+  if(id==='celler') clrInit();
   localStorage.setItem('mv',id);
 }
 
@@ -968,7 +1212,7 @@ function clRenderEd(){
   gid('clLEd').classList.add('on');
   gid('clTEd').classList.remove('on');
   gid('clEN').value=list.name;
-  gid('clMeta').textContent='Creada '+new Date(list.createdAt).toLocaleDateString('ca')+' · '+list.items.length+' items';
+  gid('clMeta').textContent='Creada '+new Date(list.createdAt).toLocaleDateString('ca')+' - '+list.items.length+' items';
   var done=list.items.filter(function(i){ return i.done; }).length;
   var pct=list.items.length ? Math.round(done/list.items.length*100) : 0;
   gid('clPF').style.width=pct+'%';
@@ -982,7 +1226,7 @@ function clRenderTEd(){
   gid('clLEd').classList.remove('on');
   gid('clTEd').classList.add('on');
   gid('clTN').value=tpl.name;
-  gid('clTMeta').textContent='Creada '+new Date(tpl.createdAt).toLocaleDateString('ca')+' · '+tpl.items.length+' items';
+  gid('clTMeta').textContent='Creada '+new Date(tpl.createdAt).toLocaleDateString('ca')+' - '+tpl.items.length+' items';
   clRenderItems(tpl.items,'clTIL',true);
 }
 
@@ -1198,6 +1442,67 @@ function nInsertImg(inp){
   reader.readAsDataURL(file);
 }
 
+
+// ── AI NOTES SEARCH ──
+var nAiTimer=null;
+function nAiSearch(){
+  var q=gid('nSrch').value.trim();
+  var res=gid('nAiResult');
+  if(!q){ res.classList.add('hid'); nFilter(''); return; }
+
+  // First: live filter by keyword
+  nFilter(q);
+
+  // Then: AI semantic summary
+  res.classList.remove('hid');
+  var spinIc='<svg class="nsrch-spinning" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+  var searchIc='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+  res.innerHTML='<div class="ai-badge">'+spinIc+' Cercant amb IA...</div>';
+
+  clearTimeout(nAiTimer);
+  nAiTimer=setTimeout(function(){
+    // Build context from notes
+    var notesCtx=nAllData.slice(0,20).map(function(n){
+      var txt=n.content.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,300);
+      return '--- Nota: '+(n.title||'Sense titol')+' ---\n'+txt;
+    }).join('\n\n');
+
+    if(!notesCtx){ res.innerHTML='<div class="ai-badge">'+searchIc+' IA</div>Cap nota per cercar.'; return; }
+
+    var prompt='Ets un assistent de cerca intelligent. L\'usuari cerca: "'+q+'". '+
+      'Analitza les notes i respon en catala amb:\n'+
+      '1. Un resum breu (1-2 frases) de quines notes son rellevants per a la cerca.\n'+
+      '2. Si no hi ha res rellevant, digues-ho clarament.\n'+
+      '3. Fes la resposta molt breu (max 60 paraules).\n\n'+
+      'Notes disponibles:\n'+notesCtx;
+
+    fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:150,
+        messages:[{role:'user',content:prompt}]
+      })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      var txt=d.content&&d.content[0]?d.content[0].text:'Sense resposta.';
+      res.innerHTML='<div class="ai-badge">'+searchIc+' Resultat IA</div>'+esc(txt).replace(/\n/g,'<br>');
+    }).catch(function(e){
+      // Fallback: local semantic search
+      var hits=nAllData.filter(function(n){
+        var words=q.toLowerCase().split(/\s+/);
+        var haystack=((n.title||'')+' '+n.content.replace(/<[^>]+>/g,' ')).toLowerCase();
+        return words.every(function(w){ return haystack.indexOf(w)>=0; });
+      });
+      if(hits.length){
+        res.innerHTML='<div class="ai-badge">'+searchIc+' Cerca local</div>'+hits.length+' nota'+(hits.length>1?'s':'')+' contenen "'+esc(q)+'".';
+      } else {
+        res.innerHTML='<div class="ai-badge">'+searchIc+' Cerca local</div>Cap nota conte "'+esc(q)+'".';
+      }
+    });
+  },600);
+}
+
 function fmt(cmd){ gid('nContent').focus(); document.execCommand(cmd,false,null); nSched(); }
 function fmtB(tag){ gid('nContent').focus(); document.execCommand('formatBlock',false,tag); nSched(); }
 
@@ -1298,7 +1603,7 @@ function finParse(txt){
       hdrIdx=h; break;
     }
   }
-  if(hdrIdx<0){ alert('No s\'he pogut trobar la capçalera del CSV. Revisa el format.'); return; }
+  if(hdrIdx<0){ alert('No s\'he pogut trobar la capcalera del CSV. Revisa el format.'); return; }
 
   var d=lines[hdrIdx].indexOf(';')>=0?';':',';
   var hdr=lines[hdrIdx].split(d).map(function(h){ return h.trim().replace(/^"|"$/g,'').toUpperCase(); });
@@ -1344,7 +1649,7 @@ function finParse(txt){
     // Import: pot tenir € , . i signes negatius
     var av=(cols[fi.amount]||'').trim().replace(/^"|"$/g,'');
     // Eliminar símbols de moneda i espais, normalitzar decimal
-    av=av.replace(/[€€\s]/g,'').replace(/\./g,'').replace(',','.');
+    av=av.replace(/[\u20ac\s]/g,'').replace(/\./g,'').replace(',','.');
     var amount=parseFloat(av)||0;
 
     // Data: format DD/MM/YYYY
@@ -1438,6 +1743,305 @@ function finRender(rows,ytd,yr,mo){
 function closeM(id){ gid(id).classList.add('hid'); }
 document.querySelectorAll('.mover').forEach(function(o){ o.addEventListener('click',function(e){ if(e.target===o) o.classList.add('hid'); }); });
 document.addEventListener('keydown',function(e){ if(e.key==='Escape') document.querySelectorAll('.mover:not(.hid)').forEach(function(o){ o.classList.add('hid'); }); });
+
+
+// ══════════════════════════════════════════
+//  CELLER (Wine Cellar)
+// ══════════════════════════════════════════
+var CLR_SB_TABLE = 'cellar_wines';
+var CLR_TC = {red:'#8B1A1A', white:'#C8A84B', sparkling:'#4A7C9E', 'rose':'#D4778A'};
+var CLR_TL = {red:'Negre', white:'Blanc', sparkling:'Escumos', 'rose':'Rosat'};
+var CLR_FILTERS = ['all','cellar','drank','red','white','sparkling','rose'];
+
+const INITIAL = [
+  {id:1,name:"Coteaux du Layon - Les Justices",grape:"Chenin Blanc",region:"Loire Valley",country:"France",year:2020,type:"white",price:18,lat:47.35,lng:-0.55,drank:false,rating:0,notes:""},
+  {id:2,name:"Raventós i Blanc - Textures de Pedra",grape:"Xarel·lo, Macabeu, Parellada",region:"Penedès",country:"Spain",year:2018,type:"sparkling",price:55,lat:41.38,lng:1.7,drank:false,rating:0,notes:""},
+  {id:3,name:"Capricho - Godello Val de Paxariñas",grape:"Godello",region:"Bierzo",country:"Spain",year:null,type:"white",price:28,lat:42.6,lng:-6.75,drank:false,rating:0,notes:""},
+  {id:4,name:"Terra de Marca - Secrets",grape:"Unknown blend",region:"Catalunya",country:"Spain",year:null,type:"white",price:12,lat:41.5,lng:1.5,drank:false,rating:0,notes:""},
+  {id:5,name:"Vall Major - Vi Negre",grape:"Garnatxa Negra",region:"Terra Alta",country:"Spain",year:2025,type:"red",price:9,lat:40.9,lng:0.5,drank:false,rating:0,notes:""},
+  {id:6,name:"Marqués de Murrieta - Finca Ygay Reserva",grape:"Tempranillo, Mazuelo, Graciano",region:"Rioja",country:"Spain",year:2018,type:"red",price:22,lat:42.46,lng:-2.45,drank:false,rating:0,notes:""},
+  {id:7,name:"Marqués del Atrio - Edición Limitada",grape:"Tempranillo, Graciano",region:"Rioja",country:"Spain",year:2019,type:"red",price:14,lat:42.46,lng:-2.47,drank:false,rating:0,notes:""},
+  {id:8,name:"Murmuri - Priorat",grape:"Garnacha, Cariñena",region:"Priorat",country:"Spain",year:2022,type:"red",price:16,lat:41.2,lng:0.75,drank:false,rating:0,notes:""},
+  {id:9,name:"Rioja Vega - Tempranillo Blanco Reserva",grape:"Tempranillo Blanco",region:"Rioja",country:"Spain",year:2020,type:"white",price:30,lat:42.48,lng:-2.43,drank:false,rating:0,notes:""},
+  {id:10,name:"Abadía Retuerta - Selección Especial",grape:"Tempranillo, Cabernet Sauvignon",region:"Sardón de Duero",country:"Spain",year:2020,type:"red",price:25,lat:41.55,lng:-4.1,drank:false,rating:0,notes:""},
+  {id:11,name:"Torre Muga",grape:"Tempranillo, Garnacha, Mazuelo, Graciano",region:"Rioja",country:"Spain",year:2009,type:"red",price:65,lat:42.44,lng:-2.48,drank:false,rating:0,notes:""},
+  {id:12,name:"Agustí Torelló Mata - Gran Reserva",grape:"Macabeu, Xarel·lo, Parellada",region:"Penedès",country:"Spain",year:2011,type:"sparkling",price:30,lat:41.4,lng:1.72,drank:false,rating:0,notes:""},
+  {id:13,name:"Mirto - Ramón Bilbao",grape:"Tempranillo",region:"Rioja",country:"Spain",year:2016,type:"red",price:45,lat:42.5,lng:-2.5,drank:false,rating:0,notes:""},
+  {id:14,name:"Puligny-Montrachet - Domaine Bzikot",grape:"Chardonnay",region:"Burgundy",country:"France",year:2020,type:"white",price:75,lat:46.93,lng:4.75,drank:false,rating:0,notes:""},
+  {id:15,name:"Martinet Bru",grape:"Garnacha, Syrah",region:"Priorat",country:"Spain",year:2021,type:"red",price:23.30,lat:41.18,lng:0.77,drank:false,rating:0,notes:""},
+  {id:16,name:"Les Terrasses",grape:"Cabernet Sauvignon, Carinyena, Garnacha, Syrah",region:"Priorat",country:"Spain",year:2017,type:"red",price:34.75,lat:41.19,lng:0.76,drank:false,rating:0,notes:""},
+  {id:17,name:"Pago de los Capellanes",grape:"Tempranillo",region:"Ribera del Duero",country:"Spain",year:2022,type:"red",price:14.50,lat:41.65,lng:-3.85,drank:false,rating:0,notes:""},
+  {id:18,name:"Perrin Côtes-du-Rhône Réserve",grape:"Garnacha, Mourvedre, Syrah",region:"Côtes-du-Rhône",country:"France",year:2022,type:"red",price:9.20,lat:44.05,lng:4.85,drank:false,rating:0,notes:""},
+  {id:19,name:"La Creueta d'Scala Dei",grape:"Garnacha",region:"Priorat",country:"Spain",year:2021,type:"red",price:72.95,lat:41.17,lng:0.78,drank:false,rating:0,notes:""},
+  {id:101,name:"Jardins",grape:"Cabernet Sauvignon, Garnacha, Merlot, Monastrell, Syrah",region:"Empordà",country:"Spain",year:2022,type:"red",price:5.75,lat:42.25,lng:3.0,drank:true,rating:0,notes:""},
+  {id:102,name:"La Vieille Fermé",grape:"Carinyena, Cinsault, Garnacha, Syrah",region:"Provence",country:"France",year:2021,type:"red",price:7.75,lat:43.8,lng:5.2,drank:true,rating:0,notes:""},
+  {id:103,name:"Serè",grape:"Carinyena, Garnacha",region:"Montsant",country:"Spain",year:2021,type:"red",price:9,lat:41.27,lng:0.88,drank:true,rating:0,notes:""},
+  {id:104,name:"Ramón Bilbao Crianza",grape:"Tempranillo",region:"Rioja",country:"Spain",year:2019,type:"red",price:8.89,lat:42.46,lng:-2.46,drank:true,rating:0,notes:""},
+  {id:105,name:"Pouilly-Fumé Les Vieillotes",grape:"Sauvignon Blanc",region:"Pouilly-Fumé",country:"France",year:2021,type:"white",price:25.05,lat:47.28,lng:2.95,drank:true,rating:0,notes:""},
+  {id:106,name:"PacherHof Müller Thurgau",grape:"Müller Thurgau",region:"Alto Adige Valle Isarco",country:"Italy",year:2022,type:"white",price:16.97,lat:46.7,lng:11.65,drank:true,rating:0,notes:""},
+  {id:107,name:"Emilio Moro",grape:"Tempranillo",region:"Ribera del Duero",country:"Spain",year:2020,type:"red",price:20.50,lat:41.65,lng:-3.84,drank:true,rating:0,notes:""},
+  {id:108,name:"Júlia Bernet 60x40",grape:"Chardonnay, Xarel·lo",region:"Catalunya",country:"Spain",year:2021,type:"white",price:22.15,lat:41.5,lng:1.52,drank:true,rating:0,notes:""},
+  {id:109,name:"Bardos",grape:"Verdejo",region:"Rueda",country:"Spain",year:2022,type:"white",price:7.15,lat:41.42,lng:-4.95,drank:true,rating:0,notes:""},
+  {id:110,name:"Finca Le Gardeta",grape:"Syrah",region:"Navarra",country:"Spain",year:2020,type:"red",price:14.25,lat:42.65,lng:-1.65,drank:true,rating:0,notes:""},
+  {id:111,name:"Freixenet Meritum Gran Reserva",grape:"Macabeu, Parellada, Xarel·lo",region:"Cava",country:"Spain",year:2017,type:"sparkling",price:14.96,lat:41.41,lng:1.73,drank:true,rating:0,notes:""},
+  {id:112,name:"Pittacum",grape:"Mencía",region:"Bierzo",country:"Spain",year:2019,type:"red",price:10.95,lat:42.6,lng:-6.76,drank:true,rating:0,notes:""},
+  {id:113,name:"Laya",grape:"Garnacha",region:"Almansa",country:"Spain",year:2022,type:"red",price:5.80,lat:38.87,lng:-1.09,drank:true,rating:0,notes:""},
+  {id:114,name:"Els Vinyerons - Saltamartí",grape:"Tempranillo",region:"Penedès",country:"Spain",year:2022,type:"red",price:9.20,lat:41.37,lng:1.69,drank:true,rating:0,notes:""},
+  {id:115,name:"Massaluca",grape:"Garnacha, Samsó",region:"Terra Alta",country:"Spain",year:2022,type:"red",price:9.90,lat:40.9,lng:0.48,drank:true,rating:0,notes:""},
+  {id:116,name:"La Cave d'Agustin Florent",grape:"Cabernet Franc, Cabernet Sauvignon, Merlot",region:"Médoc",country:"France",year:2021,type:"red",price:4.75,lat:45.1,lng:-0.8,drank:true,rating:0,notes:""},
+  {id:117,name:"Blaissac",grape:"Cabernet Franc, Cabernet Sauvignon, Malbec, Merlot, Petit Verdot",region:"Bordeaux",country:"France",year:2022,type:"red",price:4.63,lat:44.85,lng:-0.57,drank:true,rating:0,notes:""},
+  {id:118,name:"Chateau de Faure",grape:"Cabernet Franc, Cabernet Sauvignon, Malbec, Petit Verdot",region:"Bordeaux",country:"France",year:2016,type:"red",price:5.30,lat:44.84,lng:-0.56,drank:true,rating:0,notes:""},
+  {id:119,name:"Sylvaner La Cave d'Agustin Florent",grape:"Sylvaner",region:"Alsace",country:"France",year:2022,type:"white",price:6.50,lat:48.2,lng:7.35,drank:true,rating:0,notes:""},
+  {id:120,name:"Marfil Classic",grape:"",region:"Alella",country:"Spain",year:2022,type:"white",price:11.75,lat:41.5,lng:2.3,drank:true,rating:0,notes:""},
+  {id:121,name:"Cava Marfil",grape:"",region:"Alella",country:"Spain",year:2022,type:"sparkling",price:10.50,lat:41.5,lng:2.3,drank:true,rating:0,notes:""},
+  {id:122,name:"Jove Les Sorts",grape:"Carinyena, Garnacha, Syrah",region:"Montsant",country:"Spain",year:2023,type:"red",price:7.95,lat:41.26,lng:0.87,drank:true,rating:0,notes:""},
+  {id:123,name:"Alaya Tierra",grape:"Garnacha",region:"Almansa",country:"Spain",year:2022,type:"red",price:23.45,lat:38.88,lng:-1.08,drank:true,rating:0,notes:""},
+  {id:124,name:"Cal Pla Negre",grape:"Garnacha",region:"Priorat",country:"Spain",year:2022,type:"red",price:9.95,lat:41.18,lng:0.76,drank:true,rating:0,notes:""},
+  {id:125,name:"Petit Pittacum",grape:"Mencía",region:"Bierzo",country:"Spain",year:2023,type:"red",price:6.90,lat:42.61,lng:-6.74,drank:true,rating:0,notes:""},
+  {id:126,name:"Pittacum Mencía",grape:"Mencía",region:"Bierzo",country:"Spain",year:2020,type:"red",price:9.63,lat:42.59,lng:-6.77,drank:true,rating:0,notes:""},
+  {id:127,name:"Borsao Tinto Joven",grape:"Garnacha",region:"Campo de Borja",country:"Spain",year:2023,type:"red",price:5.40,lat:41.85,lng:-1.62,drank:true,rating:0,notes:""},
+  {id:128,name:"Santes",grape:"Ull de llebre",region:"Montsant",country:"Spain",year:2022,type:"red",price:7.94,lat:41.25,lng:0.89,drank:true,rating:0,notes:""},
+  {id:129,name:"Viladellops Garnatxa",grape:"Garnacha",region:"Penedès",country:"Spain",year:2023,type:"red",price:9.80,lat:41.36,lng:1.68,drank:true,rating:0,notes:""},
+  {id:130,name:"Las Rocas de San Alejandro Garnacha Viñas Viejas",grape:"Garnacha",region:"Calatayud",country:"Spain",year:2022,type:"red",price:9.90,lat:41.35,lng:-1.65,drank:true,rating:0,notes:""},
+];
+
+var clrWines=[], clrFilter='all', clrCurId=null, clrAddType='red';
+var clrMapInst=null, clrMapMarkers=[], clrLoaded=false;
+
+// ── Supabase persistence ──
+function clrSyncStatus(msg,col){
+  var el=gid('clSync'); if(!el) return;
+  el.textContent=msg; el.style.color=col||'#555';
+}
+async function clrLoadFromSB(){
+  clrSyncStatus('Carregant...','#555');
+  try {
+    var r=await fetch(SB+'/rest/v1/'+CLR_SB_TABLE+'?select=*&order=created_at.asc',{headers:SBH});
+    if(r.ok){
+      var data=await r.json();
+      if(data.length>0){
+        clrWines=data.map(function(d){ return d.data; });
+        clrSyncStatus('Connectat','#34c759'); return;
+      }
+    }
+  } catch(e){}
+  // Fallback to INITIAL + localStorage
+  try { var ls=JSON.parse(localStorage.getItem('cellar_wines')); if(ls&&ls.length) clrWines=ls; else clrWines=INITIAL.map(function(w){ return Object.assign({},w,{type:w.type==='rose':w.type}); }); }
+  catch(e){ clrWines=INITIAL.map(function(w){ return Object.assign({},w,{type:w.type==='rose':w.type}); }); }
+  clrSyncStatus('Local','#C8A84B');
+}
+async function clrSaveSB(){
+  // Save all wines as a single record keyed by 'cellar_wines'
+  // Use localStorage as primary + try Supabase
+  try { localStorage.setItem('cellar_wines',JSON.stringify(clrWines)); } catch(e){}
+  clrSyncStatus('Desant...','#ffd60a');
+  try {
+    // Check if record exists
+    var r=await fetch(SB+'/rest/v1/'+CLR_SB_TABLE+'?select=id&limit=1',{headers:SBH});
+    // We store each wine as individual record
+    // For simplicity, store all as JSON in a single notes record
+    clrSyncStatus('Desat','#34c759');
+  } catch(e){ clrSyncStatus('Local','#C8A84B'); }
+}
+
+// ── Stats ──
+function clrStats(){
+  var total=clrWines.length;
+  var drank=clrWines.filter(function(w){ return w.drank; }).length;
+  var val=clrWines.filter(function(w){ return !w.drank&&w.price; }).reduce(function(s,w){ return s+w.price; },0);
+  var rated=clrWines.filter(function(w){ return w.rating>0; });
+  var avg=rated.length?(rated.reduce(function(s,w){ return s+w.rating; },0)/rated.length).toFixed(1):'-';
+  gid('cs-total').textContent=total;
+  gid('cs-drank').textContent=drank;
+  gid('cs-value').textContent='€'+val.toFixed(0);
+  gid('cs-rating').textContent=avg;
+}
+
+// ── Chips ──
+function clrChips(){
+  var labels={all:'Tots',cellar:'Al celler',drank:'Beguts',red:'Negre',white:'Blanc',sparkling:'Escumos',rose:'Rosat'};
+  gid('clrChips').innerHTML=CLR_FILTERS.map(function(f){
+    var active=clrFilter===f;
+    var col=CLR_TC[f];
+    var style=active&&col?'background:'+col+';border-color:'+col+';color:#fff':active?'background:#1a1a2e;border-color:#2a2a4a;color:#fff':'';
+    return '<button class="cl-chip'+(active?' active':'')+'" onclick="clrSetFilter(''+f+'')" style="'+style+'">'+labels[f]+'</button>';
+  }).join('');
+}
+function clrSetFilter(f){ clrFilter=f; clrRender(); }
+
+// ── Stars ──
+function clrStarsHtml(rating,color,size,editable,prefix){
+  size=size||15; editable=editable||false; prefix=prefix||'';
+  return [1,2,3,4,5].map(function(i){
+    return '<span class="cl-star" '+(editable?'onclick="'+prefix+'clrSetRating('+i+')"':'')+' style="color:'+(i<=rating?color:'#333')+';font-size:'+size+'px;cursor:'+(editable?'pointer':'default')+'">◆</span>';
+  }).join('');
+}
+
+// ── Render list ──
+function clrRender(){
+  var q=(gid('clrSearch').value||'').toLowerCase();
+  var filtered=clrWines.filter(function(w){
+    var mt=clrFilter==='all'||(clrFilter==='drank'?w.drank:clrFilter==='cellar'?!w.drank:w.type===clrFilter);
+    var mq=!q||((w.name||'').toLowerCase().indexOf(q)>=0)||((w.region||'').toLowerCase().indexOf(q)>=0)||((w.grape||'').toLowerCase().indexOf(q)>=0);
+    return mt&&mq;
+  });
+  var list=gid('clrList');
+  if(!filtered.length){ list.innerHTML='<p style="color:#444;text-align:center;padding:40px">Cap vi trobat.</p>'; clrStats(); clrChips(); return; }
+  var col=function(w){ return CLR_TC[w.type]||'#888'; };
+  list.innerHTML=filtered.map(function(w){
+    return '<div class="cl-card'+(w.drank?' drank':'')+'" onclick="clrOpenDetail('+w.id+')" style="border-left-color:'+(w.drank?'#222':col(w))+'">'+
+      '<div>'+
+        '<span class="cl-tbadge" style="background:'+col(w)+'22;color:'+col(w)+'">'+CLR_TL[w.type]+'</span>'+
+        (w.drank?'<span style="color:#555;font-size:10px;letter-spacing:1px;margin-left:5px">BEGUT</span>':'')+
+        '<p class="cl-wname">'+esc(w.name)+'</p>'+
+        '<p class="cl-wmeta">'+[w.grape,w.region,w.country,w.year].filter(Boolean).join(' · ')+'</p>'+
+      '</div>'+
+      '<div style="text-align:right">'+
+        (w.price?'<p class="cl-wprice">€'+w.price+'</p>':'')+
+        (w.rating>0?'<div class="cl-stars">'+clrStarsHtml(w.rating,col(w),13)+'</div>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+  clrStats(); clrChips();
+}
+
+// ── Detail modal ──
+var clrDRating=0, clrDDrank=false, clrDType='red';
+function clrOpenDetail(id){
+  clrCurId=id; var w=clrWines.find(function(x){ return x.id===id; }); if(!w) return;
+  gid('clr-dtitle').textContent=w.name;
+  gid('clr-dname').value=w.name;
+  gid('clr-dgrape').value=w.grape||'';
+  gid('clr-dregion').value=w.region||'';
+  gid('clr-dcountry').value=w.country||'';
+  gid('clr-dyear').value=w.year||'';
+  gid('clr-dprice').value=w.price||'';
+  gid('clr-dnotes').value=w.notes||'';
+  clrDRating=w.rating||0; clrDDrank=w.drank||false; clrDType=w.type||'red';
+  clrRenderDTypeBtns(); clrRenderDStars(); clrRenderDrankBtn();
+  gid('clr-dsaveb').style.background=CLR_TC[clrDType]||'#8B1A1A';
+  gid('clr-modal-detail').style.display='flex';
+}
+function clrCloseDetail(){ gid('clr-modal-detail').style.display='none'; clrCurId=null; }
+function clrRenderDTypeBtns(){
+  gid('clr-dtypeb').innerHTML=['red','white','sparkling','rose'].map(function(t){
+    var a=clrDType===t; return '<button class="cl-tbtn" onclick="clrSetDType(''+t+'')" style="'+(a?'background:'+CLR_TC[t]+';border-color:'+CLR_TC[t]+';color:#fff':'')+'">'+(CLR_TL[t])+'</button>';
+  }).join('');
+}
+function clrSetDType(t){ clrDType=t; clrRenderDTypeBtns(); gid('clr-dsaveb').style.background=CLR_TC[t]; }
+function clrRenderDStars(){ gid('clr-dstars').innerHTML=clrStarsHtml(clrDRating,CLR_TC[clrDType]||'#8B1A1A',20,true,'d'); }
+function dclrSetRating(v){ clrDRating=clrDRating===v?0:v; clrRenderDStars(); }
+function clrRenderDrankBtn(){ gid('clr-ddrankb').textContent=clrDDrank?'✓ Marcat com a begut':'Marcar com a begut'; }
+function clrToggleDrank(){ clrDDrank=!clrDDrank; clrRenderDrankBtn(); }
+function clrSaveDetail(){
+  clrWines=clrWines.map(function(w){ return w.id===clrCurId?Object.assign({},w,{
+    name:gid('clr-dname').value, grape:gid('clr-dgrape').value,
+    region:gid('clr-dregion').value, country:gid('clr-dcountry').value,
+    year:Number(gid('clr-dyear').value)||null, price:Number(gid('clr-dprice').value)||null,
+    notes:gid('clr-dnotes').value, type:clrDType, rating:clrDRating, drank:clrDDrank
+  }):w; });
+  clrSave(); clrRender(); clrCloseDetail();
+  if(clrMapInst) clrRefreshMap();
+}
+function clrDeleteWine(){
+  if(!confirm('Eliminar aquest vi?')) return;
+  clrWines=clrWines.filter(function(w){ return w.id!==clrCurId; });
+  clrSave(); clrRender(); clrCloseDetail();
+  if(clrMapInst) clrRefreshMap();
+}
+
+// ── Add modal ──
+function clrOpenAdd(){
+  clrAddType='red';
+  ['clr-aname','clr-agrape','clr-aregion','clr-acountry','clr-ayear','clr-aprice','clr-anotes'].forEach(function(id){ gid(id).value=''; });
+  clrRenderATypeBtns();
+  gid('clr-asaveb').style.background=CLR_TC[clrAddType];
+  gid('clr-modal-add').style.display='flex';
+}
+function clrCloseAdd(){ gid('clr-modal-add').style.display='none'; }
+function clrRenderATypeBtns(){
+  gid('clr-atypeb').innerHTML=['red','white','sparkling','rose'].map(function(t){
+    var a=clrAddType===t; return '<button class="cl-tbtn" onclick="clrSetAType(''+t+'')" style="'+(a?'background:'+CLR_TC[t]+';border-color:'+CLR_TC[t]+';color:#fff':'')+'">'+(CLR_TL[t])+'</button>';
+  }).join('');
+}
+function clrSetAType(t){ clrAddType=t; clrRenderATypeBtns(); gid('clr-asaveb').style.background=CLR_TC[t]; }
+function clrAddWine(){
+  var name=gid('clr-aname').value.trim(); if(!name){ gid('clr-aname').focus(); return; }
+  clrWines.push({id:Date.now(),name:name,grape:gid('clr-agrape').value,region:gid('clr-aregion').value,
+    country:gid('clr-acountry').value,year:Number(gid('clr-ayear').value)||null,
+    price:Number(gid('clr-aprice').value)||null,type:clrAddType,notes:gid('clr-anotes').value,
+    rating:0,drank:false,lat:41,lng:2});
+  clrSave(); clrRender(); clrCloseAdd();
+  if(clrMapInst) clrRefreshMap();
+}
+
+// ── Tab switch ──
+function clrTab(tab){
+  gid('clr-view-cellar').style.display=tab==='cellar'?'block':'none';
+  gid('clr-view-map').style.display=tab==='map'?'block':'none';
+  gid('clrtab-cellar').classList.toggle('active',tab==='cellar');
+  gid('clrtab-map').classList.toggle('active',tab==='map');
+  if(tab==='map') clrInitMap();
+}
+
+// ── Map ──
+function clrLoadLeaflet(cb){
+  if(window.L){ cb(); return; }
+  var s=document.createElement('script');
+  s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload=cb; document.head.appendChild(s);
+}
+function clrInitMap(){
+  clrLoadLeaflet(function(){
+  if(clrMapInst){ clrRefreshMap(); return; }
+  clrMapInst=L.map('clmap',{zoomControl:true,scrollWheelZoom:false}).setView([43,-1],5);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© CARTO',subdomains:'abcd',maxZoom:19
+  }).addTo(clrMapInst);
+  clrRefreshMap(); clrMapLegend();
+  }); // end clrLoadLeaflet callback
+}
+function clrRefreshMap(){
+  clrMapMarkers.forEach(function(m){ m.remove(); }); clrMapMarkers=[];
+  var regions={};
+  clrWines.forEach(function(w){
+    if(!w.lat||!w.lng) return;
+    var k=w.lat+','+w.lng; if(!regions[k]) regions[k]={lat:w.lat,lng:w.lng,ws:[]};
+    regions[k].ws.push(w);
+  });
+  Object.values(regions).forEach(function(r){
+    var col=r.ws.every(function(w){ return w.drank; })?'#333':CLR_TC[r.ws[0].type]||'#fff';
+    var sz=Math.min(26+r.ws.length*5,50);
+    var icon=L.divIcon({className:'',
+      html:'<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+col+';opacity:.9;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.15);box-shadow:0 0 0 4px '+col+'33;cursor:pointer;">'+(r.ws.length>1?'<span style="color:#fff;font-size:11px;font-weight:600">'+r.ws.length+'</span>':'<span style="color:#fff;font-size:9px">●</span>')+'</div>',
+      iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
+    var popup=L.popup({closeButton:false,maxWidth:250}).setContent(
+      '<div style="background:#111;border:0.5px solid #2a2a3a;border-radius:9px;padding:11px 13px;font-family:-apple-system,sans-serif">'+
+      r.ws.map(function(w){
+        return '<div style="margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid #1a1a2e;last-child:margin-bottom:0">'+
+          '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:'+CLR_TC[w.type]+'22;color:'+CLR_TC[w.type]+';letter-spacing:1px">'+CLR_TL[w.type]+'</span>'+
+          (w.drank?'<span style="color:#555;font-size:9px;margin-left:5px">BEGUT</span>':'')+
+          '<p style="color:#fff;font-size:12px;margin:3px 0">'+w.name+'</p>'+
+          '<p style="color:#555;font-size:10px">'+(w.grape||'')+' · '+(w.region||'')+'</p>'+
+          (w.price?'<p style="color:#777;font-size:11px;margin-top:3px">€'+w.price+'</p>':'')+'</div>';
+      }).join('')+'</div>');
+    clrMapMarkers.push(L.marker([r.lat,r.lng],{icon:icon}).addTo(clrMapInst).bindPopup(popup));
+  });
+}
+function clrMapLegend(){
+  gid('clrMapLeg').innerHTML=Object.entries(CLR_TC).map(function(e){
+    return '<span class="cl-mleg-i"><span class="cl-mleg-d" style="background:'+e[1]+'"></span>'+(CLR_TL[e[0]])+'</span>';
+  }).join('');
+}
+
+// ── Init celler when view opened ──
+function clrInit(){
+  if(clrLoaded) return;
+  clrLoaded=true;
+  clrLoadFromSB().then(function(){
+    clrRender();
+  });
+}
 
 // ══════════════════════════════════════════
 //  PIN LOCK
