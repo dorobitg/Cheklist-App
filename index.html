@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Espai iDor</title>
+<title>iDor</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <meta name="theme-color" content="#3D4127">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1177,21 +1177,21 @@ function clTab(tab){
 
 function clRenderSB(){
   var lc=gid('clListSB'); lc.innerHTML='';
-  if(!clData.lists.length){ lc.innerHTML='<div class="clempty">Cap llista encara.</div>'; }
+  if(!clData.lists.length){ lc.innerHTML='<div class="clempty">Cap llista encara.<\/div>'; }
   else clData.lists.forEach(function(list){
     var done=list.items.filter(function(i){ return i.done; }).length;
     var el=document.createElement('div');
     el.className='clitem'+(list.id===clData.activeId?' active':'');
-    el.innerHTML='<span style="font-size:.78rem;opacity:.4">&#9745;</span><span class="cin">'+esc(list.name)+'</span><span class="cip">'+done+'/'+list.items.length+'</span><button class="cidel" onclick="event.stopPropagation();clDelList(\''+list.id+'\')">&#215;</button>';
+    el.innerHTML='<span style="font-size:.78rem;opacity:.4">&#9745;<\/span><span class="cin">'+esc(list.name)+'<\/span><span class="cip">'+done+'/'+list.items.length+'<\/span><button class="cidel" onclick="event.stopPropagation();clDelList(\''+list.id+'\')">&#215;<\/button>';
     el.addEventListener('click',function(){ clOpenList(list.id); });
     lc.appendChild(el);
   });
   var tc=gid('clTplSB'); tc.innerHTML='';
-  if(!clData.tpls.length){ tc.innerHTML='<div class="clempty">Cap plantilla encara.</div>'; }
+  if(!clData.tpls.length){ tc.innerHTML='<div class="clempty">Cap plantilla encara.<\/div>'; }
   else clData.tpls.forEach(function(tpl){
     var el=document.createElement('div');
     el.className='titem'+(tpl.id===clData.activeTId?' active':'');
-    el.innerHTML='<span style="font-size:.78rem;opacity:.4">&#8853;</span><span class="cin">'+esc(tpl.name)+'</span><span class="tic">'+tpl.items.length+'it</span><button class="cidel" onclick="event.stopPropagation();clDelTpl(\''+tpl.id+'\')">&#215;</button>';
+    el.innerHTML='<span style="font-size:.78rem;opacity:.4">&#8853;<\/span><span class="cin">'+esc(tpl.name)+'<\/span><span class="tic">'+tpl.items.length+'it<\/span><button class="cidel" onclick="event.stopPropagation();clDelTpl(\''+tpl.id+'\')">&#215;<\/button>';
     el.addEventListener('click',function(){ clOpenTpl(tpl.id); });
     tc.appendChild(el);
   });
@@ -1238,9 +1238,9 @@ function clRenderItems(items,cid,isT){
     row.className=(isT?'trow':('irow'+(item.done?' done':'')));
     row.draggable=true; row.dataset.idx=idx;
     if(isT){
-      row.innerHTML='<span class="dh">&#10783;</span><input class="titxt" type="text" value="'+esc(item.text)+'" oninput="clUpdTT('+idx+',this.value)" placeholder="Item..."><input class="tinote" type="text" value="'+esc(item.note||'')+'" oninput="clUpdTN('+idx+',this.value)" placeholder="Nota..."><button class="delbtn" onclick="clDelTI('+idx+')">&#215;</button>';
+      row.innerHTML='<span class="dh">&#10783;<\/span><input class="titxt" type="text" value="'+esc(item.text)+'" oninput="clUpdTT('+idx+',this.value)" placeholder="Item..."><input class="tinote" type="text" value="'+esc(item.note||'')+'" oninput="clUpdTN('+idx+',this.value)" placeholder="Nota..."><button class="delbtn" onclick="clDelTI('+idx+')">&#215;<\/button>';
     } else {
-      row.innerHTML='<span class="dh">&#10783;</span><input type="checkbox" '+(item.done?'checked':'')+' onchange="clToggle('+idx+',this.checked)"><input class="itxt" type="text" value="'+esc(item.text)+'" oninput="clUpdLT('+idx+',this.value)" placeholder="Item..."><input class="inote" type="text" value="'+esc(item.note||'')+'" oninput="clUpdLN('+idx+',this.value)" placeholder="Nota..."><button class="delbtn" onclick="clDelI('+idx+')">&#215;</button>';
+      row.innerHTML='<span class="dh">&#10783;<\/span><input type="checkbox" '+(item.done?'checked':'')+' onchange="clToggle('+idx+',this.checked)"><input class="itxt" type="text" value="'+esc(item.text)+'" oninput="clUpdLT('+idx+',this.value)" placeholder="Item..."><input class="inote" type="text" value="'+esc(item.note||'')+'" oninput="clUpdLN('+idx+',this.value)" placeholder="Nota..."><button class="delbtn" onclick="clDelI('+idx+')">&#215;<\/button>';
     }
     row.addEventListener('dragstart',function(e){ dragIdx=idx; row.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
     row.addEventListener('dragend',function(){ row.classList.remove('dragging'); c.querySelectorAll('.dover').forEach(function(r){ r.classList.remove('dover'); }); dragIdx=null; });
@@ -1370,11 +1370,11 @@ function nLoad(){
 }
 function nRenderList(){
   var c=gid('nList');
-  if(!nData.length){ c.innerHTML='<div class="nempty-list">Cap nota. Crea-ne una amb +</div>'; return; }
+  if(!nData.length){ c.innerHTML='<div class="nempty-list">Cap nota. Crea-ne una amb +<\/div>'; return; }
   c.innerHTML=nData.map(function(n){
     var prev=n.content.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,75);
     var date=new Date(n.updated_at).toLocaleDateString('ca',{day:'numeric',month:'short',year:'numeric'});
-    return '<div class="nitem-card'+(n.id===nActiveId?' active':'')+'" onclick="nOpen(\''+n.id+'\')"><div class="ni-title">'+esc(n.title||'Sense titol')+'</div><div class="ni-preview">'+esc(prev||'\u2014')+'</div><div class="ni-date">'+date+'</div></div>';
+    return '<div class="nitem-card'+(n.id===nActiveId?' active':'')+'" onclick="nOpen(\''+n.id+'\')"><div class="ni-title">'+esc(n.title||'Sense titol')+'<\/div><div class="ni-preview">'+esc(prev||'\u2014')+'<\/div><div class="ni-date">'+date+'<\/div><\/div>';
   }).join('');
 }
 function nFilter(q){
@@ -1455,9 +1455,9 @@ function nAiSearch(){
 
   // Then: AI semantic summary
   res.classList.remove('hid');
-  var spinIc='<svg class="nsrch-spinning" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
-  var searchIc='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
-  res.innerHTML='<div class="ai-badge">'+spinIc+' Cercant amb IA...</div>';
+  var spinIc='<svg class="nsrch-spinning" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><\/svg>';
+  var searchIc='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><\/svg>';
+  res.innerHTML='<div class="ai-badge">'+spinIc+' Cercant amb IA...<\/div>';
 
   clearTimeout(nAiTimer);
   nAiTimer=setTimeout(function(){
@@ -1467,7 +1467,7 @@ function nAiSearch(){
       return '--- Nota: '+(n.title||'Sense titol')+' ---\n'+txt;
     }).join('\n\n');
 
-    if(!notesCtx){ res.innerHTML='<div class="ai-badge">'+searchIc+' IA</div>Cap nota per cercar.'; return; }
+    if(!notesCtx){ res.innerHTML='<div class="ai-badge">'+searchIc+' IA<\/div>Cap nota per cercar.'; return; }
 
     var prompt='Ets un assistent de cerca intelligent. L\'usuari cerca: "'+q+'". '+
       'Analitza les notes i respon en catala amb:\n'+
@@ -1486,7 +1486,7 @@ function nAiSearch(){
       })
     }).then(function(r){ return r.json(); }).then(function(d){
       var txt=d.content&&d.content[0]?d.content[0].text:'Sense resposta.';
-      res.innerHTML='<div class="ai-badge">'+searchIc+' Resultat IA</div>'+esc(txt).replace(/\n/g,'<br>');
+      res.innerHTML='<div class="ai-badge">'+searchIc+' Resultat IA<\/div>'+esc(txt).replace(/\n/g,'<br>');
     }).catch(function(e){
       // Fallback: local semantic search
       var hits=nAllData.filter(function(n){
@@ -1495,9 +1495,9 @@ function nAiSearch(){
         return words.every(function(w){ return haystack.indexOf(w)>=0; });
       });
       if(hits.length){
-        res.innerHTML='<div class="ai-badge">'+searchIc+' Cerca local</div>'+hits.length+' nota'+(hits.length>1?'s':'')+' contenen "'+esc(q)+'".';
+        res.innerHTML='<div class="ai-badge">'+searchIc+' Cerca local<\/div>'+hits.length+' nota'+(hits.length>1?'s':'')+' contenen "'+esc(q)+'".';
       } else {
-        res.innerHTML='<div class="ai-badge">'+searchIc+' Cerca local</div>Cap nota conte "'+esc(q)+'".';
+        res.innerHTML='<div class="ai-badge">'+searchIc+' Cerca local<\/div>Cap nota conte "'+esc(q)+'".';
       }
     });
   },600);
@@ -1514,23 +1514,23 @@ function lrInit(){
   var cities=[{n:'Madrid',v:288},{n:'Barcelona',v:286},{n:'Valencia',v:142},{n:'Sevilla',v:98},{n:'Bilbao',v:87},{n:'Altres',v:119}];
   var maxC=288;
   gid('lrCities').innerHTML=cities.map(function(c){
-    return '<div class="lrhbr"><div class="lrhbl">'+c.n+'</div><div class="lrhbt"><div class="lrhbf" style="width:'+Math.round(c.v/maxC*100)+'%"></div></div><div class="lrhbv">'+c.v+'k&euro;</div></div>';
+    return '<div class="lrhbr"><div class="lrhbl">'+c.n+'<\/div><div class="lrhbt"><div class="lrhbf" style="width:'+Math.round(c.v/maxC*100)+'%"><\/div><\/div><div class="lrhbv">'+c.v+'k&euro;<\/div><\/div>';
   }).join('');
   var trend=[{q:'Q3 24',v:580},{q:'Q4 24',v:640},{q:'Q1 25',v:690},{q:'Q2 25',v:804},{q:'Q3 25',v:750},{q:'Q4 25',v:810},{q:'Q1 26',v:831},{q:'Q2 26',v:1020}];
   var maxT=1020;
-  gid('lrTrend').innerHTML=trend.map(function(t,i){ return '<div class="lrtbar'+(i===trend.length-1?' cur':'')+'" style="height:'+Math.round(t.v/maxT*54)+'px" title="'+t.q+': '+t.v+'k&euro;"></div>'; }).join('');
-  gid('lrTLbls').innerHTML=trend.map(function(t){ return '<div class="lrtlbl">'+t.q+'</div>'; }).join('');
+  gid('lrTrend').innerHTML=trend.map(function(t,i){ return '<div class="lrtbar'+(i===trend.length-1?' cur':'')+'" style="height:'+Math.round(t.v/maxT*54)+'px" title="'+t.q+': '+t.v+'k&euro;"><\/div>'; }).join('');
+  gid('lrTLbls').innerHTML=trend.map(function(t){ return '<div class="lrtlbl">'+t.q+'<\/div>'; }).join('');
   var funnel=[{l:'Obertes',n:104,c:'#BAC095'},{l:'Contactades',n:68,c:'#8fa050'},{l:'Avancades',n:22,c:'#5a6b2a'},{l:'Assegurades',n:2,c:'#3D4127'}];
-  gid('lrFunnel').innerHTML=funnel.map(function(f){ return '<div class="lrfrow"><div class="lrfbar" style="width:'+Math.round(f.n/104*100)+'%;background:'+f.c+'">'+f.l+'</div><div class="lrfcnt">'+f.n+' op.</div></div>'; }).join('');
+  gid('lrFunnel').innerHTML=funnel.map(function(f){ return '<div class="lrfrow"><div class="lrfbar" style="width:'+Math.round(f.n/104*100)+'%;background:'+f.c+'">'+f.l+'<\/div><div class="lrfcnt">'+f.n+' op.<\/div><\/div>'; }).join('');
 }
 
 // ══════════════════════════════════════════
 //  RSS
 // ══════════════════════════════════════════
 var RSS=[
-  {name:'El Punt Avui', url:'http://www.elpuntavui.cat/barcelona/nacional.feed?type=rss', cls:'mag', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>'},
-  {name:'Barca Blaugranes', url:'https://www.barcablaugranes.com/rss/current', cls:'barca', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 8l2 4-2 4-4-2v-4z"/></svg>'},
-  {name:'Sismes Catalunya', url:'https://sismocat.icgc.cat/sisweb2/sisweb_api_rss_external.php?consulta=2init&lang=es', cls:'sismo', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'}
+  {name:'El Punt Avui', url:'http://www.elpuntavui.cat/barcelona/nacional.feed?type=rss', cls:'mag', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/><\/svg>'},
+  {name:'Barca Blaugranes', url:'https://www.barcablaugranes.com/rss/current', cls:'barca', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 8l2 4-2 4-4-2v-4z"/><\/svg>'},
+  {name:'Sismes Catalunya', url:'https://sismocat.icgc.cat/sisweb2/sisweb_api_rss_external.php?consulta=2init&lang=es', cls:'sismo', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><\/svg>'}
 ];
 var PROXIES=[
   function(u){ return 'https://corsproxy.io/?'+encodeURIComponent(u); },
@@ -1561,21 +1561,21 @@ function fetchProxy(url,idx){
 function loadFeed(feed){
   var bid='rf-'+feed.name.replace(/\s/g,'_');
   var block=document.createElement('div'); block.className='rfeed';
-  block.innerHTML='<div class="rfhead"><span>'+feed.icon+'</span><span class="rfname">'+feed.name+'</span><span class="rfst" id="'+bid+'-st">Carregant...</span></div><div class="rpills" id="'+bid+'-pills"><div class="rload">Carregant...</div></div>';
+  block.innerHTML='<div class="rfhead"><span>'+feed.icon+'<\/span><span class="rfname">'+feed.name+'<\/span><span class="rfst" id="'+bid+'-st">Carregant...<\/span><\/div><div class="rpills" id="'+bid+'-pills"><div class="rload">Carregant...<\/div><\/div>';
   gid('rssBox').appendChild(block);
   fetchProxy(feed.url,0).then(function(xml){
     var doc=new DOMParser().parseFromString(xml,'text/xml');
     var items=Array.from(doc.querySelectorAll('item')).slice(0,10);
     var pbox=gid(bid+'-pills');
-    if(!items.length){ pbox.innerHTML='<div class="rload">Sense resultats</div>'; gid(bid+'-st').textContent='0'; return; }
+    if(!items.length){ pbox.innerHTML='<div class="rload">Sense resultats<\/div>'; gid(bid+'-st').textContent='0'; return; }
     pbox.innerHTML=items.map(function(it){
       var t=(it.querySelector('title')||{textContent:'\u2014'}).textContent.trim();
       var dt=(it.querySelector('pubDate')||it.querySelector('date')||{textContent:''}).textContent;
-      return '<div class="rpill '+feed.cls+'"><div class="rpill-t">'+esc(t)+'</div><div class="rpill-d">'+relDate(dt)+'</div></div>';
+      return '<div class="rpill '+feed.cls+'"><div class="rpill-t">'+esc(t)+'<\/div><div class="rpill-d">'+relDate(dt)+'<\/div><\/div>';
     }).join('');
     gid(bid+'-st').textContent=items.length+' noticies';
   }).catch(function(){
-    var pbox=gid(bid+'-pills'); if(pbox) pbox.innerHTML='<div class="rload">No s\'ha pogut carregar</div>';
+    var pbox=gid(bid+'-pills'); if(pbox) pbox.innerHTML='<div class="rload">No s\'ha pogut carregar<\/div>';
     var st=gid(bid+'-st'); if(st) st.textContent='Error';
   });
 }
@@ -1697,8 +1697,8 @@ function finParse(txt){
   if(!finData.length){ alert('No s\'han trobat dades. Revisa que el CSV tingui files de dades.'); return; }
 
   var years=[]; finData.forEach(function(r){ if(years.indexOf(r.year)<0) years.push(r.year); }); years.sort();
-  var sel=gid('fYear'); sel.innerHTML='<option value="">Tots els anys</option>';
-  years.forEach(function(y){ sel.innerHTML+='<option value="'+y+'">'+y+'</option>'; });
+  var sel=gid('fYear'); sel.innerHTML='<option value="">Tots els anys<\/option>';
+  years.forEach(function(y){ sel.innerHTML+='<option value="'+y+'">'+y+'<\/option>'; });
   if(years.length) sel.value=years[years.length-1];
   finFilter();
   console.log('CSV carregat: '+finData.length+' registres, '+years.length+' anys, columnes detectades:',fi);
@@ -1727,14 +1727,14 @@ function finRender(rows,ytd,yr,mo){
   var per=mo?(MN[parseInt(mo)]+' '+(yr||'')):(yr?'Any '+yr:'Tot el periode');
   gid('finContent').innerHTML=
     '<div class="kgrid">'+
-    '<div class="kcard"><div class="klbl">Ingressos &middot; '+per+'</div><div class="kval pos">'+fmt(inc)+'</div><div class="ksub">'+rows.filter(isInc).length+' moviments</div></div>'+
-    '<div class="kcard"><div class="klbl">Despeses &middot; '+per+'</div><div class="kval neg">'+fmt(exp)+'</div><div class="ksub">'+rows.filter(isExp).length+' moviments</div></div>'+
-    '<div class="kcard"><div class="klbl">Balanc &middot; '+per+'</div><div class="kval '+(bal>=0?'pos':'neg')+'">'+fmt(bal)+'</div><div class="ksub">Ingressos &minus; Despeses</div></div>'+
-    '<div class="kcard"><div class="klbl">Estalvi &middot; '+per+'</div><div class="kval pos">'+fmt(sav)+'</div><div class="ksub">Categoria ESTALVI</div></div>'+
-    '<div class="kcard" style="border-color:var(--g1)"><div class="klbl">Balanc YTD &middot; '+(yr||'Total')+'</div><div class="kval '+(yb>=0?'pos':'neg')+'">'+fmt(yb)+'</div><div class="ksub">'+fmt(yi)+' &middot; '+fmt(ye)+'</div></div>'+
-    '</div>'+
-    (mdat.length?'<div class="csec"><div class="ctit">Balanc per mesos'+(yr?' &middot; '+yr:'')+'</div><div class="cwrap"><div class="bch">'+mdat.map(function(m){ return '<div class="bg"><div class="bpair"><div class="bb inc" style="height:'+Math.round(m.inc/maxB*110)+'px" title="'+fmt(m.inc)+'"></div><div class="bb exp" style="height:'+Math.round(m.exp/maxB*110)+'px" title="'+fmt(m.exp)+'"></div>'+(m.sav>0?'<div class="bb sav" style="height:'+Math.round(m.sav/maxB*110)+'px"></div>':'')+'</div><div class="blbl">'+m.l+'</div></div>'; }).join('')+'</div><div class="bleg"><div class="bleg-i"><div class="bleg-d" style="background:var(--g1)"></div>Ingressos</div><div class="bleg-i"><div class="bleg-d" style="background:var(--g2)"></div>Despeses</div><div class="bleg-i"><div class="bleg-d" style="background:#8fa050"></div>Estalvi</div></div></div></div>':'')  +
-    (catList.length?'<div class="csec"><div class="ctit">Despesa per categoria &middot; '+per+'</div><div class="cwrap"><div class="catg">'+catList.map(function(e){ return '<div class="catro"><div class="catn">'+esc(e[0])+'</div><div class="catbw"><div class="catbf" style="width:'+Math.round(e[1]/maxC*100)+'%"></div></div><div class="catam">'+fmt(e[1])+'</div></div>'; }).join('')+'</div></div></div>':'');
+    '<div class="kcard"><div class="klbl">Ingressos &middot; '+per+'<\/div><div class="kval pos">'+fmt(inc)+'<\/div><div class="ksub">'+rows.filter(isInc).length+' moviments<\/div><\/div>'+
+    '<div class="kcard"><div class="klbl">Despeses &middot; '+per+'<\/div><div class="kval neg">'+fmt(exp)+'<\/div><div class="ksub">'+rows.filter(isExp).length+' moviments<\/div><\/div>'+
+    '<div class="kcard"><div class="klbl">Balanc &middot; '+per+'<\/div><div class="kval '+(bal>=0?'pos':'neg')+'">'+fmt(bal)+'<\/div><div class="ksub">Ingressos &minus; Despeses<\/div><\/div>'+
+    '<div class="kcard"><div class="klbl">Estalvi &middot; '+per+'<\/div><div class="kval pos">'+fmt(sav)+'<\/div><div class="ksub">Categoria ESTALVI<\/div><\/div>'+
+    '<div class="kcard" style="border-color:var(--g1)"><div class="klbl">Balanc YTD &middot; '+(yr||'Total')+'<\/div><div class="kval '+(yb>=0?'pos':'neg')+'">'+fmt(yb)+'<\/div><div class="ksub">'+fmt(yi)+' &middot; '+fmt(ye)+'<\/div><\/div>'+
+    '<\/div>'+
+    (mdat.length?'<div class="csec"><div class="ctit">Balanc per mesos'+(yr?' &middot; '+yr:'')+'<\/div><div class="cwrap"><div class="bch">'+mdat.map(function(m){ return '<div class="bg"><div class="bpair"><div class="bb inc" style="height:'+Math.round(m.inc/maxB*110)+'px" title="'+fmt(m.inc)+'"><\/div><div class="bb exp" style="height:'+Math.round(m.exp/maxB*110)+'px" title="'+fmt(m.exp)+'"><\/div>'+(m.sav>0?'<div class="bb sav" style="height:'+Math.round(m.sav/maxB*110)+'px"><\/div>':'')+'<\/div><div class="blbl">'+m.l+'<\/div><\/div>'; }).join('')+'<\/div><div class="bleg"><div class="bleg-i"><div class="bleg-d" style="background:var(--g1)"><\/div>Ingressos<\/div><div class="bleg-i"><div class="bleg-d" style="background:var(--g2)"><\/div>Despeses<\/div><div class="bleg-i"><div class="bleg-d" style="background:#8fa050"><\/div>Estalvi<\/div><\/div><\/div><\/div>':'')  +
+    (catList.length?'<div class="csec"><div class="ctit">Despesa per categoria &middot; '+per+'<\/div><div class="cwrap"><div class="catg">'+catList.map(function(e){ return '<div class="catro"><div class="catn">'+esc(e[0])+'<\/div><div class="catbw"><div class="catbf" style="width:'+Math.round(e[1]/maxC*100)+'%"><\/div><\/div><div class="catam">'+fmt(e[1])+'<\/div><\/div>'; }).join('')+'<\/div><\/div><\/div>':'');
 }
 
 // ══════════════════════════════════════════
@@ -1864,7 +1864,7 @@ function clrChips(){
     var active=clrFilter===f;
     var col=CLR_TC[f];
     var style=active&&col?'background:'+col+';border-color:'+col+';color:#fff':active?'background:#1a1a2e;border-color:#2a2a4a;color:#fff':'';
-    return '<button class="cl-chip'+(active?' active':'')+'" onclick="clrSetFilter(''+f+'')" style="'+style+'">'+labels[f]+'</button>';
+    return '<button class="cl-chip'+(active?' active':'')+'" onclick="clrSetFilter(''+f+'')" style="'+style+'">'+labels[f]+'<\/button>';
   }).join('');
 }
 function clrSetFilter(f){ clrFilter=f; clrRender(); }
@@ -1873,7 +1873,7 @@ function clrSetFilter(f){ clrFilter=f; clrRender(); }
 function clrStarsHtml(rating,color,size,editable,prefix){
   size=size||15; editable=editable||false; prefix=prefix||'';
   return [1,2,3,4,5].map(function(i){
-    return '<span class="cl-star" '+(editable?'onclick="'+prefix+'clrSetRating('+i+')"':'')+' style="color:'+(i<=rating?color:'#333')+';font-size:'+size+'px;cursor:'+(editable?'pointer':'default')+'">◆</span>';
+    return '<span class="cl-star" '+(editable?'onclick="'+prefix+'clrSetRating('+i+')"':'')+' style="color:'+(i<=rating?color:'#333')+';font-size:'+size+'px;cursor:'+(editable?'pointer':'default')+'">◆<\/span>';
   }).join('');
 }
 
@@ -1886,21 +1886,21 @@ function clrRender(){
     return mt&&mq;
   });
   var list=gid('clrList');
-  if(!filtered.length){ list.innerHTML='<p style="color:#444;text-align:center;padding:40px">Cap vi trobat.</p>'; clrStats(); clrChips(); return; }
+  if(!filtered.length){ list.innerHTML='<p style="color:#444;text-align:center;padding:40px">Cap vi trobat.<\/p>'; clrStats(); clrChips(); return; }
   var col=function(w){ return CLR_TC[w.type]||'#888'; };
   list.innerHTML=filtered.map(function(w){
     return '<div class="cl-card'+(w.drank?' drank':'')+'" onclick="clrOpenDetail('+w.id+')" style="border-left-color:'+(w.drank?'#222':col(w))+'">'+
       '<div>'+
-        '<span class="cl-tbadge" style="background:'+col(w)+'22;color:'+col(w)+'">'+CLR_TL[w.type]+'</span>'+
-        (w.drank?'<span style="color:#555;font-size:10px;letter-spacing:1px;margin-left:5px">BEGUT</span>':'')+
-        '<p class="cl-wname">'+esc(w.name)+'</p>'+
-        '<p class="cl-wmeta">'+[w.grape,w.region,w.country,w.year].filter(Boolean).join(' · ')+'</p>'+
-      '</div>'+
+        '<span class="cl-tbadge" style="background:'+col(w)+'22;color:'+col(w)+'">'+CLR_TL[w.type]+'<\/span>'+
+        (w.drank?'<span style="color:#555;font-size:10px;letter-spacing:1px;margin-left:5px">BEGUT<\/span>':'')+
+        '<p class="cl-wname">'+esc(w.name)+'<\/p>'+
+        '<p class="cl-wmeta">'+[w.grape,w.region,w.country,w.year].filter(Boolean).join(' · ')+'<\/p>'+
+      '<\/div>'+
       '<div style="text-align:right">'+
-        (w.price?'<p class="cl-wprice">€'+w.price+'</p>':'')+
-        (w.rating>0?'<div class="cl-stars">'+clrStarsHtml(w.rating,col(w),13)+'</div>':'')+
-      '</div>'+
-    '</div>';
+        (w.price?'<p class="cl-wprice">€'+w.price+'<\/p>':'')+
+        (w.rating>0?'<div class="cl-stars">'+clrStarsHtml(w.rating,col(w),13)+'<\/div>':'')+
+      '<\/div>'+
+    '<\/div>';
   }).join('');
   clrStats(); clrChips();
 }
@@ -1925,7 +1925,7 @@ function clrOpenDetail(id){
 function clrCloseDetail(){ gid('clr-modal-detail').style.display='none'; clrCurId=null; }
 function clrRenderDTypeBtns(){
   gid('clr-dtypeb').innerHTML=['red','white','sparkling','rose'].map(function(t){
-    var a=clrDType===t; return '<button class="cl-tbtn" onclick="clrSetDType(''+t+'')" style="'+(a?'background:'+CLR_TC[t]+';border-color:'+CLR_TC[t]+';color:#fff':'')+'">'+(CLR_TL[t])+'</button>';
+    var a=clrDType===t; return '<button class="cl-tbtn" onclick="clrSetDType(''+t+'')" style="'+(a?'background:'+CLR_TC[t]+';border-color:'+CLR_TC[t]+';color:#fff':'')+'">'+(CLR_TL[t])+'<\/button>';
   }).join('');
 }
 function clrSetDType(t){ clrDType=t; clrRenderDTypeBtns(); gid('clr-dsaveb').style.background=CLR_TC[t]; }
@@ -1961,7 +1961,7 @@ function clrOpenAdd(){
 function clrCloseAdd(){ gid('clr-modal-add').style.display='none'; }
 function clrRenderATypeBtns(){
   gid('clr-atypeb').innerHTML=['red','white','sparkling','rose'].map(function(t){
-    var a=clrAddType===t; return '<button class="cl-tbtn" onclick="clrSetAType(''+t+'')" style="'+(a?'background:'+CLR_TC[t]+';border-color:'+CLR_TC[t]+';color:#fff':'')+'">'+(CLR_TL[t])+'</button>';
+    var a=clrAddType===t; return '<button class="cl-tbtn" onclick="clrSetAType(''+t+'')" style="'+(a?'background:'+CLR_TC[t]+';border-color:'+CLR_TC[t]+';color:#fff':'')+'">'+(CLR_TL[t])+'<\/button>';
   }).join('');
 }
 function clrSetAType(t){ clrAddType=t; clrRenderATypeBtns(); gid('clr-asaveb').style.background=CLR_TC[t]; }
@@ -2013,24 +2013,24 @@ function clrRefreshMap(){
     var col=r.ws.every(function(w){ return w.drank; })?'#333':CLR_TC[r.ws[0].type]||'#fff';
     var sz=Math.min(26+r.ws.length*5,50);
     var icon=L.divIcon({className:'',
-      html:'<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+col+';opacity:.9;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.15);box-shadow:0 0 0 4px '+col+'33;cursor:pointer;">'+(r.ws.length>1?'<span style="color:#fff;font-size:11px;font-weight:600">'+r.ws.length+'</span>':'<span style="color:#fff;font-size:9px">●</span>')+'</div>',
+      html:'<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+col+';opacity:.9;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.15);box-shadow:0 0 0 4px '+col+'33;cursor:pointer;">'+(r.ws.length>1?'<span style="color:#fff;font-size:11px;font-weight:600">'+r.ws.length+'<\/span>':'<span style="color:#fff;font-size:9px">●<\/span>')+'<\/div>',
       iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
     var popup=L.popup({closeButton:false,maxWidth:250}).setContent(
       '<div style="background:#111;border:0.5px solid #2a2a3a;border-radius:9px;padding:11px 13px;font-family:-apple-system,sans-serif">'+
       r.ws.map(function(w){
         return '<div style="margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid #1a1a2e;last-child:margin-bottom:0">'+
-          '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:'+CLR_TC[w.type]+'22;color:'+CLR_TC[w.type]+';letter-spacing:1px">'+CLR_TL[w.type]+'</span>'+
-          (w.drank?'<span style="color:#555;font-size:9px;margin-left:5px">BEGUT</span>':'')+
-          '<p style="color:#fff;font-size:12px;margin:3px 0">'+w.name+'</p>'+
-          '<p style="color:#555;font-size:10px">'+(w.grape||'')+' · '+(w.region||'')+'</p>'+
-          (w.price?'<p style="color:#777;font-size:11px;margin-top:3px">€'+w.price+'</p>':'')+'</div>';
-      }).join('')+'</div>');
+          '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:'+CLR_TC[w.type]+'22;color:'+CLR_TC[w.type]+';letter-spacing:1px">'+CLR_TL[w.type]+'<\/span>'+
+          (w.drank?'<span style="color:#555;font-size:9px;margin-left:5px">BEGUT<\/span>':'')+
+          '<p style="color:#fff;font-size:12px;margin:3px 0">'+w.name+'<\/p>'+
+          '<p style="color:#555;font-size:10px">'+(w.grape||'')+' · '+(w.region||'')+'<\/p>'+
+          (w.price?'<p style="color:#777;font-size:11px;margin-top:3px">€'+w.price+'<\/p>':'')+'<\/div>';
+      }).join('')+'<\/div>');
     clrMapMarkers.push(L.marker([r.lat,r.lng],{icon:icon}).addTo(clrMapInst).bindPopup(popup));
   });
 }
 function clrMapLegend(){
   gid('clrMapLeg').innerHTML=Object.entries(CLR_TC).map(function(e){
-    return '<span class="cl-mleg-i"><span class="cl-mleg-d" style="background:'+e[1]+'"></span>'+(CLR_TL[e[0]])+'</span>';
+    return '<span class="cl-mleg-i"><span class="cl-mleg-d" style="background:'+e[1]+'"><\/span>'+(CLR_TL[e[0]])+'<\/span>';
   }).join('');
 }
 
