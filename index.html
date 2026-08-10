@@ -527,7 +527,6 @@ function tempsFetch(city){
       if(el)el.innerHTML='<button class="tc-del" onclick="tempsDel(decodeURIComponent(this.dataset.c))" data-c="'+encodeURIComponent(city)+'">&#215;<\/button><div class="tc-top"><div class="tc-city">'+esc(city)+'<\/div><div class="tc-err">No disponible<\/div><\/div>';
     });
 }
-());
 
 // WINES — base64 encoded to prevent HTML parser issues with special chars
 // CONFIG
@@ -574,8 +573,8 @@ function clRSB(){
   else clD.tpls.forEach(function(tpl){var el=document.createElement('button');el.className='tit'+(tpl.id===clD.aTId?' on':'');el.innerHTML='<span class="cin">'+esc(tpl.name)+'<\/span><span class="cip">'+tpl.items.length+'it<\/span><button class="cdel" onclick="event.stopPropagation();clDelTP(\''+tpl.id+'\')">&#215;<\/button>';el.addEventListener('click',function(){clOT(tpl.id);});tc.appendChild(el);});
 }
 function clSE(){G('clE').style.display='flex';G('clLE').classList.remove('on');G('clTE').classList.remove('on');}
-function clOL(id){clD.aId=id;clD.aTId=null;clRSB();clRE();if(window.innerWidth<=768)}
-function clOT(id){clD.aTId=id;clD.aId=null;clRSB();clRTE();if(window.innerWidth<=768)}
+function clOL(id){clD.aId=id;clD.aTId=null;clRSB();clRE();}
+function clOT(id){clD.aTId=id;clD.aId=null;clRSB();clRTE();}
 function clRE(){
   var list=clD.lists.find(function(l){return l.id===clD.aId;});if(!list){clSE();return;}
   G('clE').style.display='none';G('clLE').classList.add('on');G('clTE').classList.remove('on');
