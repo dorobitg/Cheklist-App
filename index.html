@@ -311,10 +311,10 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:500;display:
 @media(max-width:900px){
   .hero-ov{padding:32px 24px}
   .hero-greeting{font-size:2rem}
-  .clapp{grid-template-columns:1fr}
-  .clsb{display:none}
-  .nlay{grid-template-columns:1fr}
-  .nsb{display:none}
+  .clapp{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .clsb{display:flex;border-right:none;border-bottom:1px solid var(--bd);max-height:220px}
+  .nlay{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .nsb{display:flex;border-right:none;border-bottom:1px solid var(--bd);max-height:200px}
   .finwrap{padding:16px}
   .lrwrap{padding:16px;gap:16px}
   .lrtcol{grid-template-columns:1fr}
