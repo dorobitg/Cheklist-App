@@ -394,7 +394,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:500;display:
       <div class="clsec hid" id="clST"><div class="clsc" id="clTSB"></div><div class="cnf"><input type="text" id="clNT" placeholder="Nova plantilla..."><button class="cadd" onclick="clAddT()">+</button></div></div>
     </div>
     <div class="clmain">
-      <div class="cest" id="clE">Selecciona una llista o crea-ne una.</div>
+      <div id="clDbg" style="padding:8px 12px;font-size:.75rem;color:#888;background:#fff8;border-bottom:1px solid #eee"></div><div class="cest" id="clE">Selecciona una llista o crea-ne una.</div>
       <div class="ced" id="clLE"><div class="pts" id="pts"></div><div class="cetop"><div><input class="ceni" type="text" id="clEN" placeholder="Nom..." oninput="clRename(this.value)"><div class="cmeta" id="clM"></div></div><div style="display:flex;align-items:center;gap:8px"><div class="pw"><div class="pf" id="clPF" style="width:0%"></div></div><span style="font-size:.7rem;color:var(--t3)" id="clPL">0/0</span></div></div><div class="ilst" id="clIL"></div><div class="af"><input type="text" id="clNI" placeholder="Afegir item..." maxlength="200" onkeydown="if(event.key==='Enter')clAddI()"><input type="text" class="ni2" id="clNN" placeholder="Nota (opcional)" maxlength="100" onkeydown="if(event.key==='Enter')clAddI()"><button class="abtn" onclick="clAddI()">Afegir</button></div><div class="acts"><button class="btn" onclick="clUncheck()">Desmarcar tot</button><button class="btn" onclick="clCheck()">Marcar tot</button><button class="btn acc" onclick="openSaveTpl()">Com a plantilla</button><button class="btn pri" onclick="clPrint()">Imprimir</button><button class="btn dan" onclick="clDel()">Eliminar</button></div></div>
       <div class="ced" id="clTE"><div class="cetop"><div><input class="ceni" type="text" id="clTN" placeholder="Nom plantilla..." oninput="clRenameT(this.value)"><span class="tbg">Plantilla</span><div class="cmeta" id="clTM"></div></div></div><div class="ilst" id="clTIL"></div><div class="af"><input type="text" id="clTNI" placeholder="Afegir item..." maxlength="200" onkeydown="if(event.key==='Enter')clAddTI()"><input type="text" class="ni2" id="clTNN" placeholder="Nota (opcional)" maxlength="100" onkeydown="if(event.key==='Enter')clAddTI()"><button class="abtn" onclick="clAddTI()">Afegir</button></div><div class="acts"><button class="btn acc" onclick="openCrTpl()">Crear llista</button><button class="btn dan" onclick="clDelT()">Eliminar</button></div></div>
     </div>
@@ -511,21 +511,32 @@ function tempsRender(){
 }
 function tempsFetch(city){
   var cid='tc'+city.replace(/[^a-zA-Z0-9]/g,'');
-  var IC={Thunderstorm:'\u26c8\ufe0f',Drizzle:'\ud83c\udf27\ufe0f',Rain:'\ud83c\udf27\ufe0f',Snow:'\u2744\ufe0f',Mist:'\ud83c\udf2b\ufe0f',Fog:'\ud83c\udf2b\ufe0f',Haze:'\ud83c\udf2b\ufe0f',Clear:'\u2600\ufe0f',Clouds:'\u2601\ufe0f'};
-  fetch('https://wttr.in/'+encodeURIComponent(city)+'?format=j1',{cache:'no-store'})
+  var WC={0:'\u2600\ufe0f',1:'\u2600\ufe0f',2:'\u26c5\ufe0f',3:'\u2601\ufe0f',45:'\ud83c\udf2b\ufe0f',48:'\ud83c\udf2b\ufe0f',51:'\ud83c\udf26\ufe0f',53:'\ud83c\udf26\ufe0f',55:'\ud83c\udf27\ufe0f',61:'\ud83c\udf27\ufe0f',63:'\ud83c\udf27\ufe0f',65:'\ud83c\udf27\ufe0f',71:'\u2744\ufe0f',73:'\u2744\ufe0f',75:'\u2744\ufe0f',80:'\ud83c\udf26\ufe0f',81:'\ud83c\udf27\ufe0f',82:'\ud83c\udf27\ufe0f',95:'\u26c8\ufe0f',96:'\u26c8\ufe0f',99:'\u26c8\ufe0f'};
+  var WD={0:'Cel clar',1:'Majoritàriament clar',2:'Parcialment ennuvolat',3:'Ennuvolat',45:'Boira',48:'Boira',51:'Plugim lleuger',53:'Plugim',55:'Plugim intens',61:'Pluja feble',63:'Pluja',65:'Pluja intensa',71:'Nevada feble',73:'Nevada',75:'Nevada intensa',80:'Ruixats',81:'Ruixats forts',82:'Ruixats violents',95:'Tempesta',96:'Tempesta amb pedra',99:'Tempesta intensa'};
+  fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language=ca&format=json')
     .then(function(r){return r.json();})
-    .then(function(data){
-      var c=data.current_condition[0];
-      var desc=c.weatherDesc[0].value;
-      var icon=IC[desc.split(' ')[0]]||'\ud83c\udf21\ufe0f';
-      var el=document.getElementById(cid);if(!el)return;
-      el.innerHTML='<button class="tc-del" onclick="tempsDel(decodeURIComponent(this.dataset.c))" data-c="'+encodeURIComponent(city)+'">&#215;<\/button>'+
-        '<div class="tc-top"><div><div class="tc-city">'+esc(city)+'<\/div><div class="tc-desc">'+esc(desc)+'<\/div><\/div><div class="tc-ic">'+icon+'<\/div><\/div>'+
-        '<div style="display:flex;align-items:baseline;gap:4px"><div class="tc-temp">'+c.temp_C+'<\/div><div class="tc-unit">\u00b0C<\/div><\/div>'+
-        '<div class="tc-details"><div class="tc-d"><div class="tc-dl">Sensaci\u00f3<\/div><div class="tc-dv">'+c.FeelsLikeC+'\u00b0<\/div><\/div>'+
-        '<div class="tc-d"><div class="tc-dl">Humitat<\/div><div class="tc-dv">'+c.humidity+'%<\/div><\/div>'+
-        '<div class="tc-d"><div class="tc-dl">Vent<\/div><div class="tc-dv">'+c.windspeedKmph+' km/h<\/div><\/div><\/div>';
-    }).catch(function(){
+    .then(function(geo){
+      if(!geo.results||!geo.results.length)throw new Error('Ciutat no trobada');
+      var lat=geo.results[0].latitude,lng=geo.results[0].longitude;
+      var nom=geo.results[0].name;
+      return fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lng+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature&wind_speed_unit=kmh&timezone=auto')
+        .then(function(r){return r.json();})
+        .then(function(w){
+          var cur=w.current;
+          var code=cur.weather_code;
+          var icon=WC[code]||'\ud83c\udf21\ufe0f';
+          var desc=WD[code]||'Desconegut';
+          var el=document.getElementById(cid);if(!el)return;
+          el.innerHTML='<button class="tc-del" onclick="tempsDel(decodeURIComponent(this.dataset.c))" data-c="'+encodeURIComponent(city)+'">&#215;<\/button>'+
+            '<div class="tc-top"><div><div class="tc-city">'+esc(nom)+'<\/div><div class="tc-desc">'+esc(desc)+'<\/div><\/div><div class="tc-ic">'+icon+'<\/div><\/div>'+
+            '<div style="display:flex;align-items:baseline;gap:4px"><div class="tc-temp">'+Math.round(cur.temperature_2m)+'<\/div><div class="tc-unit">\u00b0C<\/div><\/div>'+
+            '<div class="tc-details">'+
+            '<div class="tc-d"><div class="tc-dl">Sensaci\u00f3<\/div><div class="tc-dv">'+Math.round(cur.apparent_temperature)+'\u00b0<\/div><\/div>'+
+            '<div class="tc-d"><div class="tc-dl">Humitat<\/div><div class="tc-dv">'+cur.relative_humidity_2m+'%<\/div><\/div>'+
+            '<div class="tc-d"><div class="tc-dl">Vent<\/div><div class="tc-dv">'+Math.round(cur.wind_speed_10m)+' km/h<\/div><\/div>'+
+            '<\/div>';
+        });
+    }).catch(function(e){
       var el=document.getElementById(cid);
       if(el)el.innerHTML='<button class="tc-del" onclick="tempsDel(decodeURIComponent(this.dataset.c))" data-c="'+encodeURIComponent(city)+'">&#215;<\/button><div class="tc-top"><div class="tc-city">'+esc(city)+'<\/div><div class="tc-err">No disponible<\/div><\/div>';
     });
@@ -552,16 +563,26 @@ G('heroDate').textContent=ds;
 var clD={lists:[],tpls:[],aId:null,aTId:null,tab:'l'};
 var clTm=null,clDIdx=null;
 function clLoad(){
-  setSync('Connectant...','');setLoad(20);
+  var dbg=document.getElementById('clDbg');
+  if(dbg){dbg.style.display='block';dbg.textContent='Connectant a Supabase...';}
+  setSync('Connectant...','');
   sbGet('/rest/v1/checklists?select=*&order=created_at.asc').then(function(rows){
-    setLoad(80);clD.lists=[];clD.tpls=[];
-    rows.forEach(function(r){var o={_id:r.id,id:r.id,name:r.name,createdAt:r.created_at,items:r.items||[]};r.type==='template'?clD.tpls.push(o):clD.lists.push(o);});
-    setLoad(100);setSync('Connectat','ok');
+    clD.lists=[];clD.tpls=[];
+    rows.forEach(function(r){
+      var o={_id:r.id,id:r.id,name:r.name,createdAt:r.created_at,items:r.items||[]};
+      r.type==='template'?clD.tpls.push(o):clD.lists.push(o);
+    });
+    setSync('Connectat','ok');
+    if(dbg){dbg.textContent='Rebut: '+rows.length+' files. Llistes:'+clD.lists.length+' Plantilles:'+clD.tpls.length;}
     clRSB();
     if(clD.aId&&clD.lists.find(function(l){return l.id===clD.aId;}))clRE();
     else if(clD.aTId&&clD.tpls.find(function(t){return t.id===clD.aTId;}))clRTE();
+    else if(clD.lists.length>0)clOL(clD.lists[0].id);
     else clSE();
-  }).catch(function(){setLoad(100);setSync('Error','err');});
+  }).catch(function(e){
+    setSync('Error','err');
+    if(dbg){dbg.style.display='block';dbg.style.color='#e74c3c';dbg.textContent='ERROR: '+(e.message||e);}
+  });
 }
 function clSL(list){setSync('Desant...','sv');var body={name:list.name,items:list.items,type:'list'};var p=list._id?sbPatch('/rest/v1/checklists?id=eq.'+list._id,body):sbPost('/rest/v1/checklists',body).then(function(d){list._id=d[0].id;});p.then(function(){setSync('Desat','ok');}).catch(function(){setSync('Error','err');});}
 function clST(tpl){setSync('Desant...','sv');var body={name:tpl.name,items:tpl.items,type:'template'};var p=tpl._id?sbPatch('/rest/v1/checklists?id=eq.'+tpl._id,body):sbPost('/rest/v1/checklists',body).then(function(d){tpl._id=d[0].id;});p.then(function(){setSync('Desat','ok');}).catch(function(){setSync('Error','err');});}
@@ -816,10 +837,10 @@ function lVerify(){lver=true;sha256(lpin).then(function(hash){
   sbGet('/rest/v1/app_config?key=eq.pin_hash&select=value').then(function(data){
     var stored=data&&data[0]?data[0].value:'';
     var ok=(stored&&stored===hash)||(hash==='no_subtle'&&lpin==='1314')||(stored==='3324dab86f4dcdf48ba8ed6d736dcf050f09a23bf617c7d3579224548269ba1f'&&lpin==='1314');
-    if(ok){localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));var ls=G('lockScr');ls.style.opacity='0';setTimeout(function(){ls.classList.add('gone');ls.style.opacity='';},420);}
+    if(ok){localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));var ls=G('lockScr');ls.style.opacity='0';setTimeout(function(){ls.classList.add('gone');ls.style.opacity='';var cur=localStorage.getItem('mv')||'home';clD.lists=[];clD.tpls=[];nAll=[];sv(cur);},450);}
     else{lErr();lpin='';lver=false;}
   }).catch(function(){
-    if(lpin==='1314'){localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));var ls=G('lockScr');ls.style.opacity='0';setTimeout(function(){ls.classList.add('gone');ls.style.opacity='';},420);}
+    if(lpin==='1314'){localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));var ls=G('lockScr');ls.style.opacity='0';setTimeout(function(){ls.classList.add('gone');ls.style.opacity='';var cur=localStorage.getItem('mv')||'home';clD.lists=[];clD.tpls=[];nAll=[];sv(cur);},450);}
     else{lErr();lpin='';lver=false;}
   });
 }).catch(function(){lErr();lpin='';lver=false;});}
