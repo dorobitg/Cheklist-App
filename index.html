@@ -37,6 +37,7 @@
 body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:15px;line-height:1.6;letter-spacing:-.01em}
 
 /* ── LOCK ── */
+.lock.gone{display:none!important}
 .lock{position:fixed;inset:0;z-index:2000;background:var(--t);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .4s;padding-top:env(safe-area-inset-top);font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#fff}
 .llogo span{color:var(--t3)}
 .ldots{display:flex;gap:16px}
@@ -436,7 +437,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:
 }</style>
 </head>
 <body>
-<div class="lock gone" id="lockScr">
+<div class="lock gone" id="lockScr" style="display:none">
   <div class="llogo">Espai <span>iDor</span></div>
   
   <div class="ltit">Introdueix el PIN</div>
@@ -1245,23 +1246,59 @@ document.addEventListener('keydown',function(e){
 });
 // PIN
 var lpin='',lver=false;
-function checkSess(){var s=localStorage.getItem(SESS);if(s){try{var d=JSON.parse(s);if(Date.now()-d.ts<TTL)return;}catch(ex){}}var ls=G('lockScr');ls.classList.remove('gone');ls.style.opacity='1';}
+function checkSess(){
+  try{
+    var s=localStorage.getItem(SESS);
+    if(s){
+      var d=JSON.parse(s);
+      if(Date.now()-d.ts<TTL)return;
+    }
+  }catch(ex){}
+  var ls=G('lockScr');
+  if(ls){
+    ls.classList.remove('gone');
+    ls.style.display='flex';
+    ls.style.opacity='1';
+  }
+}
 function lk(digit){if(lver||lpin.length>=4)return;lpin+=digit;lDots();if(lpin.length===4)lVerify();}
 function ldel(){if(lver)return;lpin=lpin.slice(0,-1);lDots();G('lerr').classList.add('hid');}
 function lDots(){for(var i=0;i<4;i++){var d=G('d'+i);d.classList.toggle('on',i<lpin.length);d.classList.remove('err');}}
 function lErr(){G('lerr').classList.remove('hid');for(var i=0;i<4;i++){var d=G('d'+i);d.classList.remove('on');d.classList.add('err');}setTimeout(function(){G('lerr').classList.add('hid');for(var i=0;i<4;i++)G('d'+i).classList.remove('err');},1200);}
 function sha256(t){if(window.crypto&&crypto.subtle){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');});}return Promise.resolve('no_subtle');}
-function lVerify(){lver=true;sha256(lpin).then(function(hash){
-  sbGet('/rest/v1/app_config?key=eq.pin_hash&select=value').then(function(data){
-    var stored=data&&data[0]?data[0].value:'';
-    var ok=(stored&&stored===hash)||(hash==='no_subtle'&&lpin==='1314')||(stored==='3324dab86f4dcdf48ba8ed6d736dcf050f09a23bf617c7d3579224548269ba1f'&&lpin==='1314');
-    if(ok){localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));var ls=G('lockScr');ls.style.opacity='0';setTimeout(function(){ls.classList.add('gone');ls.style.opacity='';var cur=localStorage.getItem('mv')||'home';clD.lists=[];clD.tpls=[];nAll=[];sv(cur);},450);}
-    else{lErr();lpin='';lver=false;}
-  }).catch(function(){
-    if(lpin==='1314'){localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));var ls=G('lockScr');ls.style.opacity='0';setTimeout(function(){ls.classList.add('gone');ls.style.opacity='';var cur=localStorage.getItem('mv')||'home';clD.lists=[];clD.tpls=[];nAll=[];sv(cur);},450);}
-    else{lErr();lpin='';lver=false;}
-  });
-}).catch(function(){lErr();lpin='';lver=false;});}
+function lVerify(){
+  lver=true;
+  // First: check hardcoded PIN instantly (no network)
+  if(lpin==='1314'){
+    unlockApp();
+    return;
+  }
+  // Second: try SHA256 + Supabase
+  sha256(lpin).then(function(hash){
+    sbGet('/rest/v1/app_config?key=eq.pin_hash&select=value').then(function(data){
+      var stored=data&&data[0]?data[0].value:'';
+      var ok=stored&&stored===hash;
+      if(ok){unlockApp();}else{lErr();lpin='';lver=false;}
+    }).catch(function(){lErr();lpin='';lver=false;});
+  }).catch(function(){lErr();lpin='';lver=false;});
+}
+function unlockApp(){
+  localStorage.setItem(SESS,JSON.stringify({ts:Date.now()}));
+  var ls=G('lockScr');
+  ls.style.opacity='0';
+  setTimeout(function(){
+    ls.classList.add('gone');
+    ls.style.display='none';
+    ls.style.opacity='';
+    try{
+      clD.lists=[];clD.tpls=[];nAll=[];
+      var cur=localStorage.getItem('mv')||'home';
+      sv(cur);
+    }catch(e){
+      sv('home');
+    }
+  },420);
+}
 document.addEventListener('visibilitychange',function(){
   if(document.hidden)return;
   var s=localStorage.getItem(SESS);var exp=true;
