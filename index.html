@@ -1305,6 +1305,101 @@ document.addEventListener('visibilitychange',function(){
   try{exp=Date.now()-JSON.parse(s).ts>TTL;}catch(ex){}
   if(!s||exp){localStorage.removeItem(SESS);var ls=G('lockScr');ls.classList.remove('gone');ls.style.opacity='1';lpin='';lver=false;lDots();}
 });
+
+// SYNC POLLING
+var _nEtag='', _clEtag='';
+
+function nPoll(){
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET','https://api.github.com/gists/'+GIST_ID,true);
+  xhr.setRequestHeader('Authorization','token '+GH_TOKEN);
+  xhr.setRequestHeader('Accept','application/vnd.github.v3+json');
+  xhr.setRequestHeader('User-Agent','EspaiIDor');
+  if(_nEtag)xhr.setRequestHeader('If-None-Match',_nEtag);
+  xhr.timeout=8000;
+  xhr.onload=function(){
+    if(xhr.status===304)return; // no changes
+    if(xhr.status>=200&&xhr.status<300){
+      _nEtag=xhr.getResponseHeader('ETag')||'';
+      try{
+        var g=JSON.parse(xhr.responseText);
+        var content=g.files[GIST_FILE]?g.files[GIST_FILE].content:'[]';
+        var fresh=JSON.parse(content);
+        // Only update if data actually changed
+        if(JSON.stringify(fresh)!==JSON.stringify(nAll)){
+          nAll=fresh.sort(function(a,b){return new Date(b.updated_at)-new Date(a.updated_at);});
+          nData=nAll.slice();
+          nRL();
+          // If current note was updated elsewhere, refresh editor
+          if(nAId){
+            var cur=nAll.find(function(n){return n.id===nAId;});
+            if(cur&&G('nC')&&G('nC').innerHTML!==cur.content){
+              G('nTI').value=cur.title||'';
+              G('nC').innerHTML=cur.content||'';
+            }
+          }
+        }
+      }catch(e){}
+    }
+  };
+  xhr.onerror=xhr.ontimeout=function(){};
+  xhr.send();
+}
+
+function clPoll(){
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET','https://api.github.com/gists/'+CL_GIST_ID,true);
+  xhr.setRequestHeader('Authorization','token '+GH_TOKEN);
+  xhr.setRequestHeader('Accept','application/vnd.github.v3+json');
+  xhr.setRequestHeader('User-Agent','EspaiIDor');
+  if(_clEtag)xhr.setRequestHeader('If-None-Match',_clEtag);
+  xhr.timeout=8000;
+  xhr.onload=function(){
+    if(xhr.status===304)return;
+    if(xhr.status>=200&&xhr.status<300){
+      _clEtag=xhr.getResponseHeader('ETag')||'';
+      try{
+        var g=JSON.parse(xhr.responseText);
+        var content=g.files[CL_GIST_FILE]?g.files[CL_GIST_FILE].content:'[]';
+        var fresh=JSON.parse(content);
+        var freshStr=JSON.stringify(fresh);
+        var curStr=JSON.stringify({lists:clD.lists,tpls:clD.tpls});
+        if(freshStr!==curStr){
+          clD.lists=fresh.lists||[];
+          clD.tpls=fresh.tpls||[];
+          clRSB();
+          // Refresh active list if it changed
+          if(clD.aId&&clD.lists.find(function(l){return l.id===clD.aId;}))clRE();
+          else if(clD.aTId&&clD.tpls.find(function(t){return t.id===clD.aTId;}))clRTE();
+        }
+      }catch(e){}
+    }
+  };
+  xhr.onerror=xhr.ontimeout=function(){};
+  xhr.send();
+}
+
+// Poll every 20 seconds when the view is active
+setInterval(function(){
+  if(document.hidden)return;
+  var noteView=G('view-notes');
+  var clView=G('view-checklists');
+  if(noteView&&noteView.classList.contains('on')&&nAll.length>=0)nPoll();
+  if(clView&&clView.classList.contains('on')&&clD.lists.length>=0)clPoll();
+},20000);
+
+// Also poll when tab becomes visible again
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden){
+    setTimeout(function(){
+      var noteView=G('view-notes');
+      var clView=G('view-checklists');
+      if(noteView&&noteView.classList.contains('on'))nPoll();
+      if(clView&&clView.classList.contains('on'))clPoll();
+    },500);
+  }
+});
+
 // INIT
 try{checkSess();}catch(e){}
 try{(function(){var saved=localStorage.getItem('mv');if(saved&&VIEWS.indexOf(saved)>=0)sv(saved);else sv('home');}());}catch(e){sv('home');}
