@@ -497,7 +497,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:
     </div>
     <div class="clmain">
       <div id="clDbg" style="padding:8px 12px;font-size:.75rem;color:#888;background:#fff8;border-bottom:1px solid #eee"></div><div class="cest" id="clE">Selecciona una llista o crea-ne una.</div>
-      <div class="ced" id="clLE"><div class="pts" id="pts"></div><div class="cetop"><div><input class="ceni" type="text" id="clEN" placeholder="Nom..." oninput="clRename(this.value)"><div class="cmeta" id="clM"></div></div><div style="display:flex;align-items:center;gap:8px"><div class="pw"><div class="pf" id="clPF" style="width:0%"></div></div><span style="font-size:.7rem;color:var(--t3)" id="clPL">0/0</span></div></div><div class="ilst" id="clIL"></div><div class="af"><input type="text" id="clNI" placeholder="Afegir item..." maxlength="200" onkeydown="if(event.key==='Enter')clAddI()"><input type="text" class="ni2" id="clNN" placeholder="Nota (opcional)" maxlength="100" onkeydown="if(event.key==='Enter')clAddI()"><button class="abtn" onclick="clAddI()">Afegir</button></div><div class="acts"><button class="btn" onclick="clUncheck()">Desmarcar tot</button><button class="btn" onclick="clCheck()">Marcar tot</button><button class="btn acc" onclick="openSaveTpl()">Com a plantilla</button><button class="btn pri" onclick="clPrint()">Imprimir</button><button class="btn dan" onclick="clDel()">Eliminar</button></div></div>
+      <div class="ced" id="clLE"><div class="pts" id="pts"></div><div class="cetop"><div><input class="ceni" type="text" id="clEN" placeholder="Nom..." oninput="clRename(this.value)"><div class="cmeta" id="clM"></div></div><div style="display:flex;align-items:center;gap:8px"><div class="pw"><div class="pf" id="clPF" style="width:0%"></div></div><span style="font-size:.7rem;color:var(--t3)" id="clPL">0/0</span></div></div><div class="ilst" id="clIL"></div><div class="af"><input type="text" id="clNI" placeholder="Afegir item..." maxlength="200" onkeydown="if(event.key==='Enter')clAddI()"><input type="text" class="ni2" id="clNN" placeholder="Nota (opcional)" maxlength="100" onkeydown="if(event.key==='Enter')clAddI()"><button class="abtn" onclick="clAddI()">Afegir</button></div><div class="acts"><button class="btn" id="clHideBtn" onclick="clToggleDone()">Amagar completades</button><button class="btn" onclick="clUncheck()">Desmarcar tot</button><button class="btn" onclick="clCheck()">Marcar tot</button><button class="btn acc" onclick="openSaveTpl()">Com a plantilla</button><button class="btn pri" onclick="clPrint()">Imprimir</button><button class="btn dan" onclick="clDel()">Eliminar</button></div></div>
       <div class="ced" id="clTE"><div class="cetop"><div><input class="ceni" type="text" id="clTN" placeholder="Nom plantilla..." oninput="clRenameT(this.value)"><span class="tbg">Plantilla</span><div class="cmeta" id="clTM"></div></div></div><div class="ilst" id="clTIL"></div><div class="af"><input type="text" id="clTNI" placeholder="Afegir item..." maxlength="200" onkeydown="if(event.key==='Enter')clAddTI()"><input type="text" class="ni2" id="clTNN" placeholder="Nota (opcional)" maxlength="100" onkeydown="if(event.key==='Enter')clAddTI()"><button class="abtn" onclick="clAddTI()">Afegir</button></div><div class="acts"><button class="btn acc" onclick="openCrTpl()">Crear llista</button><button class="btn dan" onclick="clDelT()">Eliminar</button></div></div>
     </div>
   </div>
@@ -698,7 +698,7 @@ G('heroDate').textContent=ds;
   img.onload=function(){img.style.opacity='1';};
 }());
 // CHECKLISTS - GitHub Gist
-var clD={lists:[],tpls:[],aId:null,aTId:null,tab:'l'};
+var clD={lists:[],tpls:[],aId:null,aTId:null,tab:'l'};var clHideDone=false;
 var clTm=null,clDIdx=null;
 var CL_GIST_ID='572592aa9310ca5c2b3eb1f21ec891ac';
 var CL_GIST_FILE='idor_checklists.json';
@@ -807,8 +807,10 @@ function clRTE(){
   clRI(tpl.items,'clTIL',true);
 }
 function clRI(items,cid,isT){
+  var visible=isT?items:clHideDone?items.filter(function(i){return!i.done;}):items;
   var c=G(cid);c.innerHTML='';
-  items.forEach(function(item,idx){
+  visible.forEach(function(item,idx){
+    var idx=items.indexOf(item);
     var row=document.createElement('div');row.className=isT?'trw':('irw'+(item.done?' dn':''));row.draggable=true;
     if(isT){row.innerHTML='<span class="dh">&#10783;<\/span><input class="ttx" type="text" value="'+esc(item.text)+'" oninput="clUTT('+idx+',this.value)" placeholder="Item..."><input class="tnt" type="text" value="'+esc(item.note||'')+'" oninput="clUTN('+idx+',this.value)" placeholder="Nota..."><button class="dbtn" onclick="clDTI('+idx+')">&#215;<\/button>';}
     else{row.innerHTML='<span class="dh">&#10783;<\/span><input type="checkbox" '+(item.done?'checked':'')+' onchange="clTog('+idx+',this.checked)"><input class="itx" type="text" value="'+esc(item.text)+'" oninput="clULT('+idx+',this.value)" placeholder="Item..."><input class="int" type="text" value="'+esc(item.note||'')+'" oninput="clULN('+idx+',this.value)" placeholder="Nota..."><button class="dbtn" onclick="clDI('+idx+')">&#215;<\/button>';}
@@ -1305,6 +1307,14 @@ document.addEventListener('visibilitychange',function(){
   try{exp=Date.now()-JSON.parse(s).ts>TTL;}catch(ex){}
   if(!s||exp){localStorage.removeItem(SESS);var ls=G('lockScr');ls.classList.remove('gone');ls.style.opacity='1';lpin='';lver=false;lDots();}
 });
+
+
+function clToggleDone(){
+  clHideDone=!clHideDone;
+  var btn=document.getElementById('clHideBtn');
+  if(btn)btn.textContent=clHideDone?'Mostrar completades':'Amagar completades';
+  var list=clAL();if(list){clRE();clRSB();}
+}
 
 // SYNC POLLING
 var _nEtag='', _clEtag='';
